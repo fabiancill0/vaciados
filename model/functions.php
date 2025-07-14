@@ -68,7 +68,7 @@ class Functions
   }
   function getProcesoDetalle($conex, $cliente, $proceso)
   {
-    $query = "SELECT plde_codigo, orpr_tipord, orpr_nrotur FROM DBA.spro_ordenproceso where clie_codigo = ? and orpr_numero = ?";
+    $query = "SELECT plde_codigo, orpr_tipord, orpr_fecpro, orpr_nrotur, line_codigo FROM DBA.spro_ordenproceso where clie_codigo = ? and orpr_numero = ?";
     $resultQuery = odbc_prepare($conex, $query);
     odbc_execute($resultQuery, array($cliente, $proceso));
     if (odbc_num_rows($resultQuery) == 0) {
@@ -78,6 +78,8 @@ class Functions
       $info = [
         'planta' => $row['plde_codigo'],
         'tipoOrd' => $row['orpr_tipord'],
+        'fecPro' => $row['orpr_fecpro'],
+        'linea' => $row['line_codigo'],
         'proceso' => $proceso,
         'cliente' => $cliente,
         'turno' => $row['orpr_nrotur']

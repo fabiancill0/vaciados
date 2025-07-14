@@ -46,7 +46,7 @@ if ($numeroTraspaso == 0) {
     $lotesDetalle = json_decode($functions->getLotesXVaciarDeta($connnect, $lotesTraspaso, $dataTraspaso->codEspecie));
     foreach ($lotesDetalle as $lote) {
     ?>
-        <div class="card">
+        <div class="card" id="<?= $lote->lote ?>">
             <div class="card-header">
                 <div class="row align-items-center">
                     <div class="col-2">

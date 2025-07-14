@@ -25,7 +25,7 @@ $functions = new Functions();
         crossorigin="anonymous" />
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://kit.fontawesome.com/34afac4ad4.js" crossorigin="anonymous"></script>
-    <script src="js/main.js?<?php md5(time()) ?>"></script>
+    <script src="js/main.js?<?= md5(time()) ?>"></script>
 </head>
 
 <body>

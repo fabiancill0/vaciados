@@ -42,7 +42,7 @@ function vaciarLote(loteId, cliente, proceso) {
         error: function (xhr, status, error) {
             console.error("Error en la solicitud:", status, error);
             console.error("Detalles de la respuesta:", xhr.responseText);
-            alert('Error al procesar la solicitud' + error);
+            alert('Error al procesar la solicitud' + xhr.responseText);
         }
     });
 }
