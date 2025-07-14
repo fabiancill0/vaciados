@@ -8,8 +8,12 @@ $functions = new Functions();
 $date = new DateTime();
 
 $cliente = $_POST['cliente'];
-$lote = $_POST['loteId'];
 $proceso = $_POST['proceso'];
+$lote = $_POST['loteId'];
+// Para testear se puede seleccionar variables directamente
+// $cliente = 15;
+// $proceso = 75;
+// $lote = 8145;
 
 $connnect = $conn->connectToServ();
 $tarjasXVaciar =  json_decode($functions->getTarjasXVaciar($connnect, $lote, $cliente));
@@ -21,7 +25,7 @@ if (empty($tarjasXVaciar)) {
     echo json_encode(['error' => 'si', 'message' => 'No hay tarjas para vaciar en este lote.']);
     exit;
 } else {
-    $queryExist = "SELECT COUNT(*) as count FROM dba.spro_ordenprocvacenca WHERE plde_codigo = ? AND orpr_tipord = ? AND orpr_numero = ? AND clie_codigo = ? AND opve_fecvac = ? AND opve_turno = ?";
+    $queryExist = "SELECT COUNT(1) FROM dba.spro_ordenprocvacenca WHERE plde_codigo = ? AND orpr_tipord = ? AND orpr_numero = ? AND clie_codigo = ? AND opve_fecvac = ? AND opve_turno = ?";
     $resultExist = odbc_prepare($connnect, $queryExist);
     $paramsExist = [
         $detalleProceso->planta,
@@ -32,7 +36,7 @@ if (empty($tarjasXVaciar)) {
         $detalleProceso->turno
     ];
     odbc_execute($resultExist, $paramsExist);
-    if (odbc_fetch_array($resultExist)['count'] == 0) {
+    if (odbc_result($resultExist, 1) == 0) {
         $queryEnca = "INSERT INTO dba.spro_ordenprocvacenca(plde_codigo, orpr_tipord, orpr_numero, clie_codigo, opve_fecvac, opve_turno, opve_estado, line_codigo) 
 VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         $resultEnca = odbc_prepare($connnect, $queryEnca);
