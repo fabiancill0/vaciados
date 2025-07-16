@@ -64,7 +64,7 @@ if ($numeroTraspaso == 0) {
                         <h5 class="text-center"><?= $lote->canBul ?></h5>
                     </div>
                     <div class="col-2 d-flex justify-content-center">
-                        <button id="<?= $lote->lote ?>" class="btn btn-success col-8" onclick="vaciarLote('<?= $lote->lote ?>', '<?= $cliente ?>', '<?= $proceso ?>')">Vaciar</button>
+                        <button id="<?= $lote->lote ?>" class="btn btn-success col-8" onclick="vaciarLote('<?= $lote->lote ?>', '<?= $cliente ?>', '<?= $proceso ?>')"><i class="fa-solid fa-caret-up fa-flip-vertical"></i> Vaciar</button>
                     </div>
                 </div>
             </div>
@@ -76,7 +76,7 @@ if ($numeroTraspaso == 0) {
     ?>
     <div class="container-fluid mt-5">
         <div class="col-12 d-flex align-items-middle justify-content-center fixed-bottom mb-3">
-            <button type="submit" name="search" class="btn btn-primary col-8">Guardar</button>
+            <button onclick="eliminarVaciado()" class="btn btn-danger col-8"><i class="fa-solid fa-trash-can"></i> Eliminar Vaciado</button>
         </div>
     </div>
 <?php
