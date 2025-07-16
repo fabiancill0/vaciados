@@ -128,7 +128,8 @@ fg_deta.lote_espcod = ? and fg_deta.mfge_numero = ?";
   {
     $query = "SELECT pesa.lote_pltcod, pesa.lote_espcod, pesa.lote_codigo, bins.enva_tipoen, bins.enva_codigo, bins.cale_calida ,pesa.mfgp_canbul, pesa.fgmb_nrotar,(pesa.mfgp_pesore - bins.enva_pesone) as mfgp_pesone, pesa.mfgp_pesore
 FROM DBA.spro_movtofrutagranpesa as pesa join (SELECT enva.enva_pesone, bin.enva_tipoen, bin.enva_codigo, bin.cale_calida, bin.bins_numero from dba.spro_bins as bin join dba.envases as enva on bin.enva_tipoen = enva.enva_tipoen 
-and bin.enva_codigo = enva.enva_codigo where bin.clie_codigo = ?) as bins on  pesa.bins_numero = bins.bins_numero where pesa.lote_codigo = ? and pesa.clie_codigo = ?";
+and bin.enva_codigo = enva.enva_codigo where bin.clie_codigo = ?) as bins on  pesa.bins_numero = bins.bins_numero left join dba.spro_ordenprocvacdeta as vaci on pesa.fgmb_nrotar = vaci.opve_nrtar1
+where pesa.lote_codigo = ? and pesa.clie_codigo = ? and vaci.opve_nrtar1 is null order by pesa.fgmb_nrotar";
     $resultQuery = odbc_prepare($conex, $query);
     odbc_execute($resultQuery, [$cliente, $lotes, $cliente]);
     if (odbc_num_rows($resultQuery) == 0) {
