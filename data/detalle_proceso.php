@@ -42,8 +42,7 @@ if ($numeroTraspaso == 0) {
     </div>
 
     <?php
-    $lotesTraspaso = json_decode($functions->getLotesXVaciar($connnect, $cliente, $numeroTraspaso));
-    $lotesDetalle = json_decode($functions->getLotesXVaciarDeta($connnect, $lotesTraspaso, $dataTraspaso->codEspecie));
+    $lotesDetalle = json_decode($functions->getLotesXVaciarDeta($connnect, $dataTraspaso->codEspecie, $numeroTraspaso));
     foreach ($lotesDetalle as $lote) {
     ?>
         <div class="card" id="<?= $lote->lote ?>">

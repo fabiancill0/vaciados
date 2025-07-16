@@ -101,14 +101,13 @@ class Functions
       return json_encode($lotes);
     }
   }
-  function getLotesXVaciarDeta($conex, $lotes, $especie)
+  function getLotesXVaciarDeta($conex, $especie, $numeroMov)
   {
-    $query = "SELECT fg_deta.lotd_totnet, fg_enca.prod_codigo, proc_deta.lote_codigo, proc_deta.orpd_canbul FROM 
-DBA.spro_lotesfrutagrandeta as fg_deta join dba.spro_ordenprocdeta as proc_deta on fg_deta.lote_codigo = proc_deta.lote_codigo and fg_deta.lote_espcod = proc_deta.lote_espcod
-join DBA.spro_lotesfrutagranel as fg_enca on fg_deta.lote_codigo = fg_enca.lote_codigo and fg_deta.lote_espcod = fg_enca.lote_espcod where
- proc_deta.lote_codigo IN (" . implode(',', array_fill(0, count($lotes), '?')) . ") AND fg_deta.lote_espcod = ?";
+    $query = "SELECT (fg_deta.mfgd_kgnent * fg_deta.mfgd_bulent) as mfgd_kgnent, fg_enca.prod_codigo, fg_deta.lote_codigo, fg_deta.mfgd_bulent FROM 
+DBA.spro_movtofrutagrandeta as fg_deta join DBA.spro_lotesfrutagranel as fg_enca on fg_deta.lote_codigo = fg_enca.lote_codigo and fg_deta.lote_espcod = fg_enca.lote_espcod where 
+fg_deta.lote_espcod = ? and fg_deta.mfge_numero = ?";
     $resultQuery = odbc_prepare($conex, $query);
-    $params = array_merge($lotes, [$especie]);
+    $params = [$especie, $numeroMov];
     odbc_execute($resultQuery, $params);
     if (odbc_num_rows($resultQuery) == 0) {
       return 0;
@@ -118,8 +117,8 @@ join DBA.spro_lotesfrutagranel as fg_enca on fg_deta.lote_codigo = fg_enca.lote_
           'lote' => $row['lote_codigo'],
           'codProd' => $row['prod_codigo'],
           'prodNombre' => $this->getNombreProductor($conex, $row['prod_codigo']),
-          'kiloNeto' => $row['lotd_totnet'],
-          'canBul' => $row['orpd_canbul']
+          'kiloNeto' => $row['mfgd_kgnent'],
+          'canBul' => $row['mfgd_bulent']
         ];
       }
       return json_encode($info);

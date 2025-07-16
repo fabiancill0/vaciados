@@ -11,9 +11,9 @@ $cliente = $_POST['cliente'];
 $proceso = $_POST['proceso'];
 $lote = $_POST['loteId'];
 // Para testear se puede seleccionar variables directamente
-// $cliente = 15;
-// $proceso = 75;
-// $lote = 8145;
+//$cliente = 49;
+//$proceso = 75;
+//$lote = 8145;
 
 $connnect = $conn->connectToServ();
 $tarjasXVaciar =  json_decode($functions->getTarjasXVaciar($connnect, $lote, $cliente));
@@ -93,38 +93,49 @@ opvd_fereva) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
     } else {
         $query = "INSERT INTO dba.spro_ordenprocvacdeta(plde_codigo, orpr_tipord, orpr_numero, clie_codigo, opve_fecvac, opve_turno, opvd_horava,
 opvd_horate, lote_pltcod, lote_espcod, lote_codigo, enva_tipoen, enva_codigo, cale_calida, opvd_canbul, opve_nrtar1, opvd_pesone, opvd_pesobr, opvd_kilpro, opvd_kilori, 
-opvd_fereva) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+opvd_fereva) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $result = odbc_prepare($connnect, $query);
 
         foreach ($tarjasXVaciar as $tarja) {
-            $date->modify('+4 seconds');
-            $params = [
-                $detalleProceso->planta,
-                $detalleProceso->tipoOrd,
-                $detalleProceso->proceso,
-                $detalleProceso->cliente,
-                $detalleProceso->fecPro,
-                $detalleProceso->turno,
-                $date->format('H:i:s'),
-                $date->format('H:i:s'),
-                $tarja->pltCod,
-                $tarja->especie,
-                $tarja->lote,
-                $tarja->tipoEnvase,
-                $tarja->envaseCodigo,
-                $tarja->calidad,
-                $tarja->canBul,
-                $tarja->nroTarja,
-                $tarja->pesoNeto,
-                $tarja->pesoBruto,
-                $tarja->pesoNeto,
-                $tarja->pesoNeto,
-                date('Y-m-d')
+            $queryTarExist = "SELECT COUNT(1) FROM dba.spro_ordenprocvacdeta WHERE opve_nrtar1 = ?";
+            $resultTarExist = odbc_prepare($connnect, $queryTarExist);
+            $paramsTarExist = [
+                $tarja->nroTarja
             ];
-
-            if (!odbc_execute($result, $params)) {
-                echo json_encode(['error' => 'si', 'message' => 'Error al vaciar el lote: ' . odbc_errormsg($connnect)]);
+            odbc_execute($resultTarExist, [$tarja->nroTarja]);
+            if (odbc_result($resultTarExist, 1) > 0) {
+                echo json_encode(['error' => 'si', 'message' => 'La tarja ' . $tarja->nroTarja . ' ya ha sido vaciada.']);
                 exit;
+            } else {
+                $date->modify('+4 seconds');
+                $params = [
+                    $detalleProceso->planta,
+                    $detalleProceso->tipoOrd,
+                    $detalleProceso->proceso,
+                    $detalleProceso->cliente,
+                    $detalleProceso->fecPro,
+                    $detalleProceso->turno,
+                    $date->format('H:i:s'),
+                    $date->format('H:i:s'),
+                    $tarja->pltCod,
+                    $tarja->especie,
+                    $tarja->lote,
+                    $tarja->tipoEnvase,
+                    $tarja->envaseCodigo,
+                    $tarja->calidad,
+                    $tarja->canBul,
+                    $tarja->nroTarja,
+                    $tarja->pesoNeto,
+                    $tarja->pesoBruto,
+                    $tarja->pesoNeto,
+                    $tarja->pesoNeto,
+                    date('Y-m-d')
+                ];
+
+                if (!odbc_execute($result, $params)) {
+                    echo json_encode(['error' => 'si', 'message' => 'Error al vaciar el lote: ' . odbc_errormsg($connnect)]);
+                    exit;
+                }
             }
         }
     }
