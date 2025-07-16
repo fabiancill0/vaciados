@@ -32,11 +32,22 @@ function vaciarLote(loteId, cliente, proceso) {
             proceso: proceso
         },
         dataType: "json",
+        beforeSend: function () {
+            $('#' + loteId).html('<span class="spinner-border spinner-border-sm" aria-hidden="true"></span> <span role="status">Vaciando...</span>');
+            $('#' + loteId).prop('disabled', true);
+        },
         success: function (response) {
             if (response.error == 'si') {
-                alert(response.message);
+                if (response.error_type == 1) {
+                    alert(response.message);
+                    $('#' + loteId).html('Vaciado');
+                    $('#' + loteId).prop('disabled', true);
+                }
             } else {
                 alert(response.message);
+                $('#' + loteId).html('Vaciado');
+                $('#' + loteId).prop('disabled', true);
+
             }
         },
         error: function (xhr, status, error) {

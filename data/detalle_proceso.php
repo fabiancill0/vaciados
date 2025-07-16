@@ -23,19 +23,19 @@ if ($numeroTraspaso == 0) {
         <div class="card-header">
             <div class="row">
                 <div class="col-2">
-                    <h3 class="text-center">Lote</h3>
+                    <h5 class="text-center">Lote</h5>
                 </div>
                 <div class="col-2">
-                    <h3 class="text-center">Cod Prod</h3>
+                    <h5 class="text-center">Cod Prod</h5>
                 </div>
                 <div class="col-2">
-                    <h3 class="text-center">Productor</h3>
+                    <h5 class="text-center">Productor</h5>
                 </div>
                 <div class="col-2">
-                    <h3 class="text-center">Kilos Netos</h3>
+                    <h5 class="text-center">Kilos Netos</h5>
                 </div>
                 <div class="col-2">
-                    <h3 class="text-center">Bultos</h3>
+                    <h5 class="text-center">Bultos</h5>
                 </div>
             </div>
         </div>
@@ -45,26 +45,26 @@ if ($numeroTraspaso == 0) {
     $lotesDetalle = json_decode($functions->getLotesXVaciarDeta($connnect, $dataTraspaso->codEspecie, $numeroTraspaso));
     foreach ($lotesDetalle as $lote) {
     ?>
-        <div class="card" id="<?= $lote->lote ?>">
+        <div class="card">
             <div class="card-header">
                 <div class="row align-items-center">
                     <div class="col-2">
-                        <h3 class="text-center"><?= $lote->lote ?></h3>
+                        <h5 class="text-center"><?= $lote->lote ?></h5>
                     </div>
                     <div class="col-2">
-                        <h3 class="text-center"><?= $lote->codProd ?></h3>
+                        <h5 class="text-center"><?= $lote->codProd ?></h5>
                     </div>
                     <div class="col-2">
                         <h5 class="text-center"><?= $lote->prodNombre ?></h5>
                     </div>
                     <div class="col-2">
-                        <h3 class="text-center"><?= number_format($lote->kiloNeto, 2, ',', '.') ?></h3>
+                        <h5 class="text-center"><?= number_format($lote->kiloNeto, 2, ',', '.') ?></h5>
                     </div>
                     <div class="col-2">
-                        <h3 class="text-center"><?= $lote->canBul ?></h3>
+                        <h5 class="text-center"><?= $lote->canBul ?></h5>
                     </div>
                     <div class="col-2 d-flex justify-content-center">
-                        <button class="btn btn-success col-8" onclick="vaciarLote('<?= $lote->lote ?>', '<?= $cliente ?>', '<?= $proceso ?>')">Vaciar</button>
+                        <button id="<?= $lote->lote ?>" class="btn btn-success col-8" onclick="vaciarLote('<?= $lote->lote ?>', '<?= $cliente ?>', '<?= $proceso ?>')">Vaciar</button>
                     </div>
                 </div>
             </div>
@@ -74,7 +74,7 @@ if ($numeroTraspaso == 0) {
     }
 
     ?>
-    <div class="container-fluid bg-dark">
+    <div class="container-fluid mt-5">
         <div class="col-12 d-flex align-items-middle justify-content-center fixed-bottom mb-3">
             <button type="submit" name="search" class="btn btn-primary col-8">Guardar</button>
         </div>

@@ -22,7 +22,7 @@ $detalleProceso = json_decode($functions->getProcesoDetalle($connnect, $cliente,
 
 
 if (empty($tarjasXVaciar)) {
-    echo json_encode(['error' => 'si', 'message' => 'No hay tarjas para vaciar en este lote.']);
+    echo json_encode(['error' => 'si', 'error_type' => 1, 'message' => 'No hay tarjas para vaciar en este lote.']);
     exit;
 } else {
     $queryExist = "SELECT COUNT(1) FROM dba.spro_ordenprocvacenca WHERE plde_codigo = ? AND orpr_tipord = ? AND orpr_numero = ? AND clie_codigo = ? AND opve_fecvac = ? AND opve_turno = ?";
@@ -51,7 +51,7 @@ VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
             $detalleProceso->linea
         ];
         if (!odbc_execute($resultEnca, $paramsEnca)) {
-            echo json_encode(['error' => 'si', 'message' => 'Error al insertar la orden de vaciado: ' . odbc_errormsg($connnect)]);
+            echo json_encode(['error' => 'si', 'error_type' => 2, 'message' => 'Error al insertar la orden de vaciado: ' . odbc_errormsg($connnect)]);
             exit;
         }
         $query = "INSERT INTO dba.spro_ordenprocvacdeta(plde_codigo, orpr_tipord, orpr_numero, clie_codigo, opve_fecvac, opve_turno, opvd_horava,
@@ -86,7 +86,7 @@ opvd_fereva) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
             ];
 
             if (!odbc_execute($result, $params)) {
-                echo json_encode(['error' => 'si', 'message' => 'Error al vaciar el lote: ' . odbc_errormsg($connnect)]);
+                echo json_encode(['error' => 'si', 'error_type' => 3, 'message' => 'Error al vaciar el lote: ' . odbc_errormsg($connnect)]);
                 exit;
             }
         }
@@ -119,11 +119,11 @@ opvd_fereva) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
                 $tarja->pesoBruto,
                 $tarja->pesoNeto,
                 $tarja->pesoNeto,
-                date('Y-m-d')
+                $detalleProceso->fecPro
             ];
 
             if (!odbc_execute($result, $params)) {
-                echo json_encode(['error' => 'si', 'message' => 'Error al vaciar el lote: ' . odbc_errormsg($connnect)]);
+                echo json_encode(['error' => 'si', 'error_type' => 3, 'message' => 'Error al vaciar el lote: ' . odbc_errormsg($connnect)]);
                 exit;
             }
         }
