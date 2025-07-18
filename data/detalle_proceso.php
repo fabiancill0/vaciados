@@ -19,64 +19,40 @@ if ($numeroTraspaso == 0) {
 } else {
 ?>
 
-    <div class="card" style="position: sticky; top: 0; z-index: 1; background-color: #343a40; color: white;">
-        <div class="card-header">
-            <div class="row">
-                <div class="col-2">
-                    <h5 class="text-center">Lote</h5>
-                </div>
-                <div class="col-2">
-                    <h5 class="text-center">Cod Prod</h5>
-                </div>
-                <div class="col-2">
-                    <h5 class="text-center">Productor</h5>
-                </div>
-                <div class="col-2">
-                    <h5 class="text-center">Kilos Netos</h5>
-                </div>
-                <div class="col-2">
-                    <h5 class="text-center">Bultos</h5>
-                </div>
-            </div>
-        </div>
-    </div>
+    <table class="table table-responsive-sm table-sm table-borderless text-center">
+        <thead>
+            <tr class="table-active">
+                <th>Lote</th>
+                <th>Productor</th>
+                <th>Kilos</th>
+                <th>Bultos</th>
+                <th>Acción</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php
+            $lotesDetalle = json_decode($functions->getLotesXVaciarDeta($connnect, $dataTraspaso->codEspecie, $numeroTraspaso));
+            foreach ($lotesDetalle as $lote) {
+            ?>
 
-    <?php
-    $lotesDetalle = json_decode($functions->getLotesXVaciarDeta($connnect, $dataTraspaso->codEspecie, $numeroTraspaso));
-    foreach ($lotesDetalle as $lote) {
-    ?>
-        <div class="card">
-            <div class="card-header">
-                <div class="row align-items-center">
-                    <div class="col-2">
-                        <h5 class="text-center"><?= $lote->lote ?></h5>
-                    </div>
-                    <div class="col-2">
-                        <h5 class="text-center"><?= $lote->codProd ?></h5>
-                    </div>
-                    <div class="col-2">
-                        <h5 class="text-center"><?= $lote->prodNombre ?></h5>
-                    </div>
-                    <div class="col-2">
-                        <h5 class="text-center"><?= number_format($lote->kiloNeto, 2, ',', '.') ?></h5>
-                    </div>
-                    <div class="col-2">
-                        <h5 class="text-center"><?= $lote->canBul ?></h5>
-                    </div>
-                    <div class="col-2 d-flex justify-content-center">
-                        <button id="<?= $lote->lote ?>" class="btn btn-success col-8" onclick="vaciarLote('<?= $lote->lote ?>', '<?= $cliente ?>', '<?= $proceso ?>')"><i class="fa-solid fa-caret-up fa-flip-vertical"></i> Vaciar</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+                <tr>
+                    <td><?= $lote->lote ?></td>
+                    <td><?= $lote->prodNombre ?></td>
+                    <td><?= number_format($lote->kiloNeto, 2, ',', '.') ?></td>
+                    <td><?= $lote->canBul ?></td>
+                    <td><button id="<?= $lote->lote ?>" class="btn btn-success" onclick="vaciarLote('<?= $lote->lote ?>', '<?= $cliente ?>', '<?= $proceso ?>')"><i class="fa-solid fa-caret-up fa-flip-vertical"></i> Vaciar</button></td>
+                </tr>
 
-    <?php
-    }
+            <?php
+            }
 
-    ?>
-    <div class="container-fluid mt-5">
-        <div class="col-12 d-flex align-items-middle justify-content-center fixed-bottom mb-3">
-            <button onclick="eliminarVaciado()" class="btn btn-danger col-8"><i class="fa-solid fa-trash-can"></i> Eliminar Vaciado</button>
+            ?>
+        </tbody>
+    </table>
+    <br>
+    <div class="container-fluid">
+        <div class="col-12 d-flex align-items-middle justify-content-center fixed-bottom">
+            <button onclick="eliminarVaciado()" class="btn btn-danger col-12"><i class="fa-solid fa-trash-can"></i> Eliminar Vaciado</button>
         </div>
     </div>
 <?php

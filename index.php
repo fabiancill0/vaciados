@@ -26,6 +26,25 @@ $functions = new Functions();
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://kit.fontawesome.com/34afac4ad4.js" crossorigin="anonymous"></script>
     <script src="js/main.js?<?= md5(time()) ?>"></script>
+    <style>
+        .table-container {
+            overflow-y: auto;
+            width: 100%;
+            max-height: 50vh;
+            border-radius: 0.25rem;
+        }
+
+        .table-container thead tr {
+            position: sticky;
+            top: 0;
+            z-index: 1;
+            line-height: 20px;
+        }
+
+        .table-container tbody tr {
+            line-height: 20px;
+        }
+    </style>
 </head>
 
 <body>
@@ -35,7 +54,7 @@ $functions = new Functions();
                 <h3 class="text-center">Vaciado lotes orden de proceso</h3>
             </div>
             <div class="card-body">
-                <div class="row mb-3 justify-content-center">
+                <div class="row justify-content-center">
                     <div class="col-5">
                         <label for="cliente" class="form-label">Cliente</label>
                         <select name="cliente" id="cliente" class="form-select">
@@ -54,7 +73,7 @@ $functions = new Functions();
                 </div>
             </div>
         </div>
-        <div id="orden" style="max-height: 55vh; overflow-y: auto; width: 100%;">
+        <div id="orden" class="table-container">
 
         </div>
     </div>
