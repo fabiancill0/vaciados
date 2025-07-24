@@ -40,10 +40,6 @@ $functions = new Functions();
             z-index: 1;
             line-height: 20px;
         }
-
-        .table-container tbody tr {
-            line-height: 20px;
-        }
     </style>
 </head>
 
@@ -73,8 +69,8 @@ $functions = new Functions();
                 </div>
             </div>
         </div>
+        <div id="prod"></div>
         <div id="orden" class="table-container">
-
         </div>
     </div>
     <!-- Bootstrap JavaScript Libraries -->

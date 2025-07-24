@@ -66,6 +66,24 @@ class Functions
       return json_encode(['nroTraspaso' => odbc_result($resultQuery, 'mfge_numero'), 'codEspecie' => odbc_result($resultQuery, 'espe_codigo')]);
     }
   }
+  function getEstadoProcesoMovimento($conex, $cliente, $proceso)
+  {
+    $query = "SELECT op.orpr_estado, mov.mfge_estmov FROM DBA.spro_ordenproceso as op join DBA.spro_movtofrutagranenca as mov on op.clie_codigo = mov.clie_codigo
+and op.orpr_numero = mov.defg_docrel where op.clie_codigo = ? and op.orpr_numero = ?";
+    $resultQuery = odbc_prepare($conex, $query);
+    odbc_execute($resultQuery, [$cliente, $proceso]);
+    if (odbc_num_rows($resultQuery) == 0) {
+      return json_encode(['estado' => 0]);
+    } else {
+      if (odbc_result($resultQuery, 'orpr_estado') == 2 and odbc_result($resultQuery, 'mfge_estmov') == 2) {
+        return json_encode(['estado' => 'termino']);
+      } else if (odbc_result($resultQuery, 'orpr_estado') == 3 and odbc_result($resultQuery, 'mfge_estmov') == 3) {
+        return json_encode(['estado' => 'cierre']);
+      } else {
+        return json_encode(['estado' => 'activo']);
+      }
+    }
+  }
   function getProcesoDetalle($conex, $cliente, $proceso)
   {
     $query = "SELECT plde_codigo, orpr_tipord, orpr_fecpro, orpr_nrotur, line_codigo FROM DBA.spro_ordenproceso where clie_codigo = ? and orpr_numero = ?";
@@ -85,6 +103,18 @@ class Functions
         'turno' => $row['orpr_nrotur']
       ];
       return json_encode($info);
+    }
+  }
+  function getProductorProceso($conex, $cliente, $proceso)
+  {
+    $query = "SELECT prod_codigo FROM DBA.spro_ordenproceso where clie_codigo = ? and orpr_numero = ?";
+    $resultQuery = odbc_prepare($conex, $query);
+    odbc_execute($resultQuery, array($cliente, $proceso));
+    if (odbc_num_rows($resultQuery) == 0) {
+      return json_encode(['productor' => 0]);
+    } else {
+      $row = odbc_fetch_array($resultQuery);
+      return json_encode(['productor' => $this->getNombreProductor($conex, $row['prod_codigo'])]);
     }
   }
   function getLotesXVaciar($conex, $cliente, $movimiento)
@@ -151,6 +181,94 @@ where pesa.lote_codigo = ? and pesa.clie_codigo = ? and vaci.opve_nrtar1 is null
         ];
       }
       return json_encode($tarjas);
+    }
+  }
+  function getTarjasHistoricas($conex, $lotes, $cliente)
+  {
+    $query = "SELECT pesa.lote_pltcod, pesa.lote_espcod, pesa.lote_codigo, bins.enva_tipoen, bins.enva_codigo, bins.cale_calida ,pesa.mfgp_canbul, pesa.fgmb_nrotar,(pesa.mfgp_pesore - bins.enva_pesone) as mfgp_pesone, pesa.mfgp_pesore
+FROM DBA.spro_movtofrutagranpesa as pesa join (SELECT enva.enva_pesone, bin.enva_tipoen, bin.enva_codigo, bin.cale_calida, bin.bins_numero from dba.spro_bins as bin join dba.envases as enva on bin.enva_tipoen = enva.enva_tipoen 
+and bin.enva_codigo = enva.enva_codigo where bin.clie_codigo = ?) as bins on  pesa.bins_numero = bins.bins_numero left join dba.spro_ordenprocvacdeta as vaci on pesa.fgmb_nrotar = vaci.opve_nrtar1
+where pesa.lote_codigo = ? and pesa.clie_codigo = ? order by pesa.fgmb_nrotar";
+    $resultQuery = odbc_prepare($conex, $query);
+    odbc_execute($resultQuery, [$cliente, $lotes, $cliente]);
+    if (odbc_num_rows($resultQuery) == 0) {
+      return 0;
+    } else {
+      $tarjas = [];
+      while ($row = odbc_fetch_array($resultQuery)) {
+        $tarjas[] = [
+          'lote' => $row['lote_codigo'],
+          'especie' => $row['lote_espcod'],
+          'pltCod' => $row['lote_pltcod'],
+          'tipoEnvase' => $row['enva_tipoen'],
+          'envaseCodigo' => $row['enva_codigo'],
+          'calidad' => $row['cale_calida'],
+          'canBul' => $row['mfgp_canbul'],
+          'nroTarja' => $row['fgmb_nrotar'],
+          'pesoNeto' => $row['mfgp_pesone'],
+          'pesoBruto' => $row['mfgp_pesore']
+        ];
+      }
+      return json_encode($tarjas);
+    }
+  }
+  function getTarjaDetalle($conex, $tarja, $cliente)
+  {
+    $query = "SELECT pesa.lote_pltcod, pesa.lote_espcod, pesa.lote_codigo, bins.enva_tipoen, bins.enva_codigo, bins.cale_calida ,pesa.mfgp_canbul, pesa.fgmb_nrotar,(pesa.mfgp_pesore - bins.enva_pesone) as mfgp_pesone, pesa.mfgp_pesore
+FROM DBA.spro_movtofrutagranpesa as pesa join (SELECT enva.enva_pesone, bin.enva_tipoen, bin.enva_codigo, bin.cale_calida, bin.bins_numero from dba.spro_bins as bin join dba.envases as enva on bin.enva_tipoen = enva.enva_tipoen 
+and bin.enva_codigo = enva.enva_codigo where bin.clie_codigo = ?) as bins on  pesa.bins_numero = bins.bins_numero left join dba.spro_ordenprocvacdeta as vaci on pesa.fgmb_nrotar = vaci.opve_nrtar1
+where pesa.fgmb_nrotar = ? and pesa.clie_codigo = ? and vaci.opve_nrtar1 is null order by pesa.fgmb_nrotar";
+    $resultQuery = odbc_prepare($conex, $query);
+    odbc_execute($resultQuery, [$cliente, $tarja, $cliente]);
+    if (odbc_num_rows($resultQuery) == 0) {
+      return json_encode(['error' => true]);
+    } else {
+
+      $row = odbc_fetch_array($resultQuery);
+      $tarjas = [
+        'error' => false,
+        'lote' => $row['lote_codigo'],
+        'especie' => $row['lote_espcod'],
+        'pltCod' => $row['lote_pltcod'],
+        'tipoEnvase' => $row['enva_tipoen'],
+        'envaseCodigo' => $row['enva_codigo'],
+        'calidad' => $row['cale_calida'],
+        'canBul' => $row['mfgp_canbul'],
+        'nroTarja' => $row['fgmb_nrotar'],
+        'pesoNeto' => $row['mfgp_pesone'],
+        'pesoBruto' => $row['mfgp_pesore']
+      ];
+      return json_encode($tarjas);
+    }
+  }
+  function getTarjasVaciadas($conex, $cliente, $proceso, $lote)
+  {
+    $query = "SELECT opve_nrtar1 from dba.spro_ordenprocvacdeta where clie_codigo = ? and orpr_numero = ? and lote_codigo = ?";
+    $resultQuery = odbc_prepare($conex, $query);
+    odbc_execute($resultQuery, [$cliente, $proceso, $lote]);
+    if (odbc_num_rows($resultQuery) == 0) {
+      return json_encode(['error' => true]);
+    } else {
+      $tarjas = [];
+      while ($row = odbc_fetch_array($resultQuery)) {
+        $tarjas[$row['opve_nrtar1']] = 'vaciada';
+      }
+      return json_encode($tarjas);
+    }
+  }
+  function getLotesVaciados($conex, $cliente, $proceso)
+  {
+    $query = "SELECT lote_codigo, count(opve_nrtar1) as canBul from dba.spro_ordenprocvacdeta where clie_codigo = ? and orpr_numero = ? group by lote_codigo";
+    $resultQuery = odbc_prepare($conex, $query);
+    odbc_execute($resultQuery, [$cliente, $proceso]);
+    if (odbc_num_rows($resultQuery) == 0) {
+      return json_encode(['error' => true]);
+    } else {
+      $lotes = [];
+      while ($row = odbc_fetch_array($resultQuery)) {
+        $lotes[$row['lote_codigo']] = $row['canBul'];
+      }
+      return json_encode($lotes);
     }
   }
 }
