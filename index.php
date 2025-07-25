@@ -55,7 +55,7 @@ $functions = new Functions();
                         <label for="cliente" class="form-label">Cliente</label>
                         <select name="cliente" id="cliente" class="form-select">
                             <?php
-                            $functions->getClientesCod($conn->connectToServ());
+                            $functions->getClientesCodOrden($conn->connectToServ());
                             ?>
                         </select>
                     </div>

@@ -35,61 +35,66 @@ $(document).ready(function () {
     });
 });
 function eliminarVaciado() {
-    var proceso = $('#proceso').val();
-    var cliente = $('#cliente').val();
-    $.ajax({
-        type: "POST",
-        url: "./data/eliminar_vaciado.php",
-        data: {
-            proceso: proceso,
-            cliente: cliente
-        },
-        dataType: "json",
-        beforeSend: function () {
-            $('#orden').html('<div class="d-flex justify-content-center mt-3"><div class="spinner-border" role="status"></div></div>');
-        },
-        success: function (responseDel) {
-            if (responseDel.error == 'si') {
-                if (responseDel.error_type == 1) {
+    if (confirm('Seguro deseas eliminar este movimiento?')) {
+        var proceso = $('#proceso').val();
+        var cliente = $('#cliente').val();
+        $.ajax({
+            type: "POST",
+            url: "./data/eliminar_vaciado.php",
+            data: {
+                proceso: proceso,
+                cliente: cliente
+            },
+            dataType: "json",
+            beforeSend: function () {
+                $('#orden').html('<div class="d-flex justify-content-center mt-3"><div class="spinner-border" role="status"></div></div>');
+            },
+            success: function (responseDel) {
+                if (responseDel.error == 'si') {
+                    if (responseDel.error_type == 1) {
+                        alert(responseDel.message);
+                    }
+                    else if (responseDel.error_type == 4) {
+                        alert(responseDel.message);
+                        $('#orden').load("./data/detalle_proceso.php", { proceso: proceso, cliente: cliente });
+                    }
+                    else if (responseDel.error_type == 5) {
+                        alert(responseDel.message);
+                        $('#orden').load("./data/detalle_proceso.php", { proceso: proceso, cliente: cliente });
+                    }
+                    else if (responseDel.error_type == 6) {
+                        alert(responseDel.message);
+                        $('#orden').load("./data/detalle_proceso.php", { proceso: proceso, cliente: cliente });
+                    }
+                } else {
                     alert(responseDel.message);
+                    $.ajax({
+                        type: "POST",
+                        url: "./data/detalle_proceso.php",
+                        data: {
+                            proceso: proceso,
+                            cliente: cliente
+                        },
+                        dataType: "html",
+                        beforeSend: function () {
+                            $('#orden').html('<div class="d-flex justify-content-center mt-3"><div class="spinner-border" role="status"></div></div>');
+                        },
+                        success: function (response) {
+                            $('#orden').html(response);
+                        },
+                    });
                 }
-                else if (responseDel.error_type == 4) {
-                    alert(responseDel.message);
-                    $('#orden').load("./data/detalle_proceso.php", { proceso: proceso, cliente: cliente });
-                }
-                else if (responseDel.error_type == 5) {
-                    alert(responseDel.message);
-                    $('#orden').load("./data/detalle_proceso.php", { proceso: proceso, cliente: cliente });
-                }
-                else if (responseDel.error_type == 6) {
-                    alert(responseDel.message);
-                    $('#orden').load("./data/detalle_proceso.php", { proceso: proceso, cliente: cliente });
-                }
-            } else {
-                alert(responseDel.message);
-                $.ajax({
-                    type: "POST",
-                    url: "./data/detalle_proceso.php",
-                    data: {
-                        proceso: proceso,
-                        cliente: cliente
-                    },
-                    dataType: "html",
-                    beforeSend: function () {
-                        $('#orden').html('<div class="d-flex justify-content-center mt-3"><div class="spinner-border" role="status"></div></div>');
-                    },
-                    success: function (response) {
-                        $('#orden').html(response);
-                    },
-                });
+            },
+            error: function (xhr, status, error) {
+                console.error("Error en la solicitud:", status, error);
+                console.error("Detalles de la respuesta:", xhr.responseText);
+                alert('Error al procesar la solicitud' + xhr.responseText);
             }
-        },
-        error: function (xhr, status, error) {
-            console.error("Error en la solicitud:", status, error);
-            console.error("Detalles de la respuesta:", xhr.responseText);
-            alert('Error al procesar la solicitud' + xhr.responseText);
-        }
-    });
+        });
+    } else {
+        alert('Eliminación cancelada.');
+    }
+
 }
 function vaciarLote(loteId, cliente, proceso) {
     $.ajax({

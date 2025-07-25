@@ -1,7 +1,7 @@
 <?php
 class Functions
 {
-  public function getClientesCod($conn)
+  function getClientesCod($conn)
   {
     $query = "SELECT clie_codigo, clie_nombre FROM dba.clientesprod ORDER BY clie_codigo";
     $result = odbc_exec($conn, $query);
@@ -14,10 +14,23 @@ class Functions
       } else {
       ?>
         <option value="<?= $row['clie_codigo'] ?>"><?= $row['clie_codigo'] . ' - ' . $row['clie_nombre'] ?></option>
-<?php
+      <?php
       }
     }
   }
+  function getClientesCodOrden($conn)
+  {
+    $query = "SELECT pro.clie_codigo, clie.clie_nombre FROM DBA.spro_ordenproceso AS pro JOIN dba.clientesprod AS clie ON pro.clie_codigo = clie.clie_codigo
+WHERE pro.clie_codigo <> 15 GROUP BY pro.clie_codigo, clie.clie_nombre ORDER BY pro.clie_codigo";
+    $result = odbc_exec($conn, $query);
+    while ($row = odbc_fetch_array($result)) {
+      $row = array_map("utf8_encode", $row);
+      ?>
+      <option value="<?= $row['clie_codigo'] ?>"><?= $row['clie_codigo'] . ' - ' . $row['clie_nombre'] ?></option>
+<?php
+    }
+  }
+
   function getNombreProductor($conex, $codigo)
   {
     $query = "SELECT prod_nombre FROM DBA.productores WHERE prod_codigo = $codigo";
