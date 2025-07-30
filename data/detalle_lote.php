@@ -13,7 +13,7 @@ $proceso = $_POST['proceso'];
 
 $connnect = $conn->connectToServ();
 $tarjasXVaciar =  json_decode($functions->getTarjasHistoricas($connnect, $lote, $cliente));
-$tarjasVaciadas =  json_decode($functions->getTarjasVaciadas($connnect, $cliente, $proceso, $lote), true);
+$tarjasVaciadas =  json_decode($functions->getTarjasVaciadas($connnect, $cliente, $lote), true);
 if ($tarjasXVaciar == 0) {
     echo json_encode(['error' => 'si', 'message' => 'No hay tarjas para vaciar en este lote.']);
     exit;

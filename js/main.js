@@ -230,19 +230,19 @@ function desplegarLote(loteId, cliente, proceso) {
                         $('#' + loteId + '_row').after('<tr class="border border-warning-subtle tarjas-' + loteId + '">' +
                             '</td><td>' + valueOfElement.nroTarja +
                             '</td><td>' + valueOfElement.pesoNeto +
-                            '</td><td>' + valueOfElement.canBul +
+                            '</td><td colspan="2">' + valueOfElement.canBul +
                             '</td><td colspan="2"><button id="' + valueOfElement.nroTarja + '" class="btn btn-success" onclick="vaciarTarja(' + loteId + ', ' + valueOfElement.nroTarja + ', ' + cliente + ', ' + proceso + ')" disabled><i class="fa-solid fa-check"></i> Vaciada</button>' +
                             '</td></tr>');
                     } else {
                         $('#' + loteId + '_row').after('<tr class="border border-warning-subtle tarjas-' + loteId + '">' +
                             '</td><td>' + valueOfElement.nroTarja +
                             '</td><td>' + valueOfElement.pesoNeto +
-                            '</td><td>' + valueOfElement.canBul +
+                            '</td><td colspan="2">' + valueOfElement.canBul +
                             '</td><td colspan="2"><button id="' + valueOfElement.nroTarja + '" class="btn btn-success" onclick="vaciarTarja(' + loteId + ', ' + valueOfElement.nroTarja + ', ' + cliente + ', ' + proceso + ')"><i class="fa-solid fa-caret-up fa-flip-vertical"></i> Vaciar</button>' +
                             '</td></tr>');
                     }
                 });
-                $('#' + loteId + '_row').after('<tr class="tarjas-' + loteId + ' table-active"><th>Tarja</th><th>Kilos</th><th>Bultos</th><th colspan="2">Acción</th></tr>');
+                $('#' + loteId + '_row').after('<tr class="tarjas-' + loteId + ' table-active"><th>Tarja</th><th>Kilos</th><th colspan="2">Bultos</th><th colspan="2">Acción</th></tr>');
                 $('#' + loteId + '_deta').html('<i class="fa-solid fa-caret-up"></i> Cerrar');
                 $('#' + loteId + '_deta').prop('disabled', false);
                 $('#' + loteId + '_deta').attr('onclick', 'cerrarDetalle(' + loteId + ', ' + cliente + ', ' + proceso + ')');

@@ -254,11 +254,11 @@ where pesa.fgmb_nrotar = ? and pesa.clie_codigo = ? and vaci.opve_nrtar1 is null
       return json_encode($tarjas);
     }
   }
-  function getTarjasVaciadas($conex, $cliente, $proceso, $lote)
+  function getTarjasVaciadas($conex, $cliente, $lote)
   {
-    $query = "SELECT opve_nrtar1 from dba.spro_ordenprocvacdeta where clie_codigo = ? and orpr_numero = ? and lote_codigo = ?";
+    $query = "SELECT opve_nrtar1 from dba.spro_ordenprocvacdeta where clie_codigo = ? and lote_codigo = ?";
     $resultQuery = odbc_prepare($conex, $query);
-    odbc_execute($resultQuery, [$cliente, $proceso, $lote]);
+    odbc_execute($resultQuery, [$cliente, $lote]);
     if (odbc_num_rows($resultQuery) == 0) {
       return json_encode(['error' => true]);
     } else {
