@@ -66,8 +66,10 @@ VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 opvd_horate, lote_pltcod, lote_espcod, lote_codigo, enva_tipoen, enva_codigo, cale_calida, opvd_canbul, opve_nrtar1, opvd_pesone, opvd_pesobr, opvd_kilpro, opvd_kilori, 
 opvd_fereva) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             $result = odbc_prepare($connnect, $query);
-
+            $bultosLote = 0;
             foreach ($tarjasXVaciar as $tarja) {
+                $pesoLote += $tarja->pesoNeto;
+                $bultosLote += $tarja->canBul;
                 $date->modify('+4 seconds');
                 $params = [
                     $detalleProceso->planta,
@@ -103,8 +105,11 @@ opvd_fereva) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
 opvd_horate, lote_pltcod, lote_espcod, lote_codigo, enva_tipoen, enva_codigo, cale_calida, opvd_canbul, opve_nrtar1, opvd_pesone, opvd_pesobr, opvd_kilpro, opvd_kilori, 
 opvd_fereva) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             $result = odbc_prepare($connnect, $query);
-
+            $pesoLote = 0;
+            $bultosLote = 0;
             foreach ($tarjasXVaciar as $tarja) {
+                $pesoLote += $tarja->pesoNeto;
+                $bultosLote += $tarja->canBul;
                 $date->modify('+4 seconds');
                 $params = [
                     $detalleProceso->planta,
@@ -136,6 +141,6 @@ opvd_fereva) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
                 }
             }
         }
-        echo json_encode(['error' => 'no', 'message' => 'Lote vaciado correctamente.']);
+        echo json_encode(['error' => 'no', 'message' => 'Lote vaciado correctamente.', 'pesoLote' => $pesoLote, 'bultosLote' => $bultosLote]);
     }
 }

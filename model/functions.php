@@ -269,6 +269,21 @@ where pesa.fgmb_nrotar = ? and pesa.clie_codigo = ? and vaci.opve_nrtar1 is null
       return json_encode($tarjas);
     }
   }
+  function getTotalTarjasVaciadas($conex, $cliente, $proceso, $lote)
+  {
+    $query = "SELECT count(opve_nrtar1) as canBulVac, sum(opvd_pesone) as canKilVac from dba.spro_ordenprocvacdeta where clie_codigo = ? and orpr_numero = ? and lote_codigo = ?";
+    $resultQuery = odbc_prepare($conex, $query);
+    odbc_execute($resultQuery, [$cliente, $proceso, $lote]);
+    if (odbc_num_rows($resultQuery) == 0) {
+      return json_encode(['error' => true]);
+    } else {
+      $tarjas = [];
+      $row = odbc_fetch_array($resultQuery);
+      $tarjas = ['canBulVac' => $row['canBulVac'], 'canKilVac' => $row['canKilVac']];
+
+      return json_encode($tarjas);
+    }
+  }
   function getLotesVaciados($conex, $cliente, $proceso)
   {
     $query = "SELECT lote_codigo, count(opve_nrtar1) as canBul from dba.spro_ordenprocvacdeta where clie_codigo = ? and orpr_numero = ? group by lote_codigo";

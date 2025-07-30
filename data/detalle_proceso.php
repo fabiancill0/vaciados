@@ -24,7 +24,8 @@ if ($numeroTraspaso == 0) {
             <tr class="table-active">
                 <th>Lote</th>
                 <th>Kilos</th>
-                <th>Bultos</th>
+                <th>Bultos por Vaciar</th>
+                <th>Bultos Vaciados</th>
                 <th colspan="2">Acciones</th>
             </tr>
         </thead>
@@ -32,7 +33,10 @@ if ($numeroTraspaso == 0) {
             <?php
             $lotesDetalle = json_decode($functions->getLotesXVaciarDeta($connnect, $dataTraspaso->codEspecie, $numeroTraspaso));
             $lotesVaciados = json_decode($functions->getLotesVaciados($connnect, $cliente, $proceso), true);
+            $conteoBulVac = 0;
+            $conteoKilVac = 0;
             foreach ($lotesDetalle as $lote) {
+                $tarjasVaciadas =  json_decode($functions->getTotalTarjasVaciadas($connnect, $cliente, $proceso, $lote->lote));
                 if (isset($lotesVaciados[$lote->lote])) {
                     if ($lotesVaciados[$lote->lote] == $lote->canBul) {
             ?>
@@ -41,6 +45,7 @@ if ($numeroTraspaso == 0) {
                             <td><?= $lote->lote ?></td>
                             <td><?= number_format($lote->kiloNeto, 2, ',', '.') ?></td>
                             <td><?= $lote->canBul ?></td>
+                            <td id="<?= $lote->lote ?>_row_canBul"><?= $lote->canBul ?></td>
                             <td><button id="<?= $lote->lote ?>_deta" class="btn btn-warning" onclick="desplegarLote('<?= $lote->lote ?>', '<?= $cliente ?>', '<?= $proceso ?>')" disabled><i class="fa-solid fa-check"></i> Vaciado</button></td>
                             <td><button id="<?= $lote->lote ?>" class="btn btn-success" onclick="vaciarLote('<?= $lote->lote ?>', '<?= $cliente ?>', '<?= $proceso ?>')" disabled><i class="fa-solid fa-check"></i> Vaciado</button></td>
                         </tr>
@@ -53,6 +58,7 @@ if ($numeroTraspaso == 0) {
                             <td><?= $lote->lote ?></td>
                             <td><?= number_format($lote->kiloNeto, 2, ',', '.') ?></td>
                             <td><?= $lote->canBul ?></td>
+                            <td id="<?= $lote->lote ?>_row_canBul"><?= $tarjasVaciadas->canBulVac ?></td>
                             <td><button id="<?= $lote->lote ?>_deta" class="btn btn-warning" onclick="desplegarLote('<?= $lote->lote ?>', '<?= $cliente ?>', '<?= $proceso ?>')"><i class="fa-solid fa-caret-up fa-flip-vertical"></i> Tarjas</button></td>
                             <td><button id="<?= $lote->lote ?>" class="btn btn-success" onclick="vaciarLote('<?= $lote->lote ?>', '<?= $cliente ?>', '<?= $proceso ?>')"><i class="fa-solid fa-caret-up fa-flip-vertical"></i> Vaciar</button></td>
                         </tr>
@@ -66,6 +72,7 @@ if ($numeroTraspaso == 0) {
                         <td><?= $lote->lote ?></td>
                         <td><?= number_format($lote->kiloNeto, 2, ',', '.') ?></td>
                         <td><?= $lote->canBul ?></td>
+                        <td id="<?= $lote->lote ?>_row_canBul"><?= $tarjasVaciadas->canBulVac ?></td>
                         <td><button id="<?= $lote->lote ?>_deta" class="btn btn-warning" onclick="desplegarLote('<?= $lote->lote ?>', '<?= $cliente ?>', '<?= $proceso ?>')"><i class="fa-solid fa-caret-up fa-flip-vertical"></i> Tarjas</button></td>
                         <td><button id="<?= $lote->lote ?>" class="btn btn-success" onclick="vaciarLote('<?= $lote->lote ?>', '<?= $cliente ?>', '<?= $proceso ?>')"><i class="fa-solid fa-caret-up fa-flip-vertical"></i> Vaciar</button></td>
                     </tr>

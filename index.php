@@ -72,6 +72,8 @@ $functions = new Functions();
         <div id="prod"></div>
         <div id="orden" class="table-container">
         </div>
+        <div id="total_proc"></div>
+
     </div>
     <!-- Bootstrap JavaScript Libraries -->
     <script
