@@ -24,7 +24,7 @@ if ($numeroTraspaso == 0) {
             <tr class="table-active">
                 <th>Lote</th>
                 <th>Kilos</th>
-                <th>Bultos por Vaciar</th>
+                <th>Bultos</th>
                 <th>Bultos Vaciados</th>
                 <th colspan="2">Acciones</th>
             </tr>
