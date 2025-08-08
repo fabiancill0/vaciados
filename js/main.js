@@ -263,6 +263,17 @@ function cerrarDetalle(loteId, cliente, proceso) {
     $('#' + loteId + '_deta').html('<i class="fa-solid fa-caret-up fa-flip-vertical"></i> Tarjas');
 
 }
+function mostrarDetalle(cliente, proceso) {
+    $.ajax({
+        beforeSend: function () {
+            $('#deta_proc').html('<div class="d-flex justify-content-center mt-3"><div class="spinner-border" role="status"></div></div>');
+        },
+        success: function (response) {
+            $('#deta_proc').load("./data/detalle_vaciado.php", { proceso: proceso, cliente: cliente });
+        }
+    });
+
+}
 function vaciarTarja(loteId, tarjaId, cliente, proceso) {
     $.ajax({
         type: "POST",

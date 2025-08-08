@@ -120,14 +120,16 @@ and op.orpr_numero = mov.defg_docrel where op.clie_codigo = ? and op.orpr_numero
   }
   function getProductorProceso($conex, $cliente, $proceso)
   {
-    $query = "SELECT prod_codigo FROM DBA.spro_ordenproceso where clie_codigo = ? and orpr_numero = ?";
+    $query = "SELECT prod_codigo FROM DBA.spro_movtofrutagranenca where defg_docrel = ? and clie_codigo = ?";
     $resultQuery = odbc_prepare($conex, $query);
-    odbc_execute($resultQuery, array($cliente, $proceso));
+    odbc_execute($resultQuery, [$proceso, $cliente]);
     if (odbc_num_rows($resultQuery) == 0) {
-      return json_encode(['productor' => 0]);
+      $detalle = ['error' => true];
+      return json_encode($detalle);
     } else {
       $row = odbc_fetch_array($resultQuery);
-      return json_encode(['productor' => $this->getNombreProductor($conex, $row['prod_codigo'])]);
+      $detalle = ['error' => false, 'productor' => $this->getNombreProductor($conex, $row['prod_codigo'])];
+      return json_encode($detalle);
     }
   }
   function getLotesXVaciar($conex, $cliente, $movimiento)
@@ -297,6 +299,111 @@ where pesa.fgmb_nrotar = ? and pesa.clie_codigo = ? and vaci.opve_nrtar1 is null
         $lotes[$row['lote_codigo']] = $row['canBul'];
       }
       return json_encode($lotes);
+    }
+  }
+  function getDetalleVaciado($conex, $fecha, $turno)
+  {
+    $query = "SELECT sum(opvd_pesone) as kilos, count(opve_nrtar1) as bultos, hour(opvd_horava) as horas, case 
+when horas = 0 then '12 a.m. - 1 a.m.'
+when horas = 1 then '1 a.m. - 2 a.m.'
+when horas = 2 then '2 a.m. - 3 a.m.'
+when horas = 3 then '3 a.m. - 4 a.m.'
+when horas = 4 then '4 a.m. - 5 a.m.'
+when horas = 5 then '5 a.m. - 6 a.m.'
+when horas = 6 then '6 a.m. - 7 a.m.'
+when horas = 7 then '7 a.m. - 8 a.m.'
+when horas = 8 then '8 a.m. - 9 a.m.'
+when horas = 9 then '9 a.m. - 10 a.m.'
+when horas = 10 then '10 a.m. - 11 a.m.'
+when horas = 11 then '11 a.m. - 12 p.m.'
+when horas = 12 then '12 p.m. - 1 p.m. '
+when horas = 13 then '1 p.m. - 2 p.m.'
+when horas = 14 then '2 p.m. - 3 p.m.'
+when horas = 15 then '3 p.m. - 4 p.m.'
+when horas = 16 then '4 p.m. - 5 p.m.'
+when horas = 17 then '5 p.m. - 6 p.m.'
+when horas = 18 then '6 p.m. - 7 p.m.'
+when horas = 19 then '7 p.m. - 8 p.m.'
+when horas = 20 then '8 p.m. - 9 p.m.'
+when horas = 21 then '9 p.m. - 10 p.m.'
+when horas = 22 then '10 p.m. - 11 p.m.'
+else '11 p.m. - 12 a.m.' end as tramoHora, case 
+when horas = 0 then 2
+when horas = 1 then 2
+when horas = 2 then 2
+when horas = 3 then 2
+when horas = 4 then 2
+when horas = 5 then 2
+when horas = 6 then 2
+when horas = 7 then 1
+when horas = 8 then 1
+when horas = 9 then 1
+when horas = 10 then 1
+when horas = 11 then 1
+when horas = 12 then 1
+when horas = 13 then 1
+when horas = 14 then 1
+when horas = 15 then 1
+when horas = 16 then 1
+when horas = 17 then 1
+when horas = 18 then 2
+when horas = 19 then 2
+when horas = 20 then 2
+when horas = 21 then 2
+when horas = 22 then 2
+else 2 end as turno, case
+when horas = 0 then 7
+when horas = 1 then 8
+when horas = 2 then 9
+when horas = 3 then 10
+when horas = 4 then 11
+when horas = 5 then 12
+when horas = 6 then 1
+when horas = 7 then 2
+when horas = 8 then 3
+when horas = 9 then 4
+when horas = 10 then 5
+when horas = 11 then 6
+when horas = 12 then 7
+when horas = 13 then 8
+when horas = 14 then 9
+when horas = 15 then 10
+when horas = 16 then 11
+when horas = 17 then 12
+when horas = 18 then 1
+when horas = 19 then 2
+when horas = 20 then 3
+when horas = 21 then 4
+when horas = 22 then 5
+else 6 end as secuencia FROM DBA.spro_ordenprocvacdeta where opve_fecvac = ? AND turno = ? group by horas order by secuencia";
+    $resultQuery = odbc_prepare($conex, $query);
+    odbc_execute($resultQuery, [$fecha, $turno]);
+    if (odbc_num_rows($resultQuery) == 0) {
+      $detalle = [];
+      $detalle[] = ['error' => true];
+      return json_encode($detalle);
+    } else {
+      $detalle = [];
+      while ($row = odbc_fetch_array($resultQuery)) {
+        $detalle[] = ['error' => false, 'kilos' => $row['kilos'], 'bultos' => $row['bultos'], 'tramoHora' => $row['tramoHora'], 'turno' => $row['turno']];
+      }
+      return json_encode($detalle);
+    }
+  }
+  function getTotalVaciado($conex, $fecha)
+  {
+    $query = "SELECT sum(opvd_pesone) as kilos, count(opve_nrtar1) as bultos FROM DBA.spro_ordenprocvacdeta where opve_fecvac = ?";
+    $resultQuery = odbc_prepare($conex, $query);
+    odbc_execute($resultQuery, [$fecha]);
+    if (odbc_num_rows($resultQuery) == 0) {
+      $detalle = [];
+      $detalle[] = ['error' => true];
+      return json_encode($detalle);
+    } else {
+      $detalle = [];
+      $row = odbc_fetch_array($resultQuery);
+      $detalle[] = ['error' => false, 'kilos' => $row['kilos'], 'bultos' => $row['bultos']];
+      return json_encode($detalle);
     }
   }
 }

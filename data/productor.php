@@ -11,8 +11,8 @@ $proceso = $_POST['proceso'];
 
 $connnect = $conn->connectToServ();
 $productor =  json_decode($functions->getProductorProceso($connnect, $cliente, $proceso));
-if ($productor->productor == 0) {
-    echo "<script>alert('No existe orden para este productor.');</script>";
+if ($productor->error) {
+    echo "<script>alert('No se encontró el número de traspaso para el cliente y proceso especificados.');</script>";
     exit;
 } else {
 ?>

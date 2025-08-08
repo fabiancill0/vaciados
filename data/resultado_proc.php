@@ -38,14 +38,14 @@ if ($numeroTraspaso == 0) {
 ?>
     <div class="card mt-1 mb-1">
         <div class="card-header">
-            <div class="row jutify-content-center">
-                <h6 class="col text-center">Kilos Vaciados</h6>
-                <h6 class="col text-center" id="totKilVac"><?= number_format($conteoKilVac, 2, ',', '.') ?></h6>
-                <h6 style="display:none" id="totKilVacReal"><?= $conteoKilVac ?></h6>
-                <h6 class="col text-center">Bultos Vaciados</h6>
-                <h6 class="col text-center" id="totBulVac"><?= $conteoBulVac ?></h6>
+            <div class="d-flex align-items-center justify-content-center">
+                <div class="flex-fill">Kilos Vaciados</div>
+                <div class="flex-fill" id="totKilVac"><?= number_format($conteoKilVac, 2, ',', '.') ?></div>
+                <div style="display:none" id="totKilVacReal"><?= $conteoKilVac ?></div>
+                <div class="flex-fill">Bultos Vaciados</div>
+                <div class="flex-fill" id="totBulVac"><?= $conteoBulVac ?></div>
+                <div class="flex-fill"><button class="btn btn-primary col-12" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="mostrarDetalle('<?= $cliente ?>', '<?= $proceso ?>')"><span><i class="fa-solid fa-plus"></i></span> <span role="status">Mostrar detalle</span></button></div>
             </div>
-
         </div>
     </div>
 <?php
