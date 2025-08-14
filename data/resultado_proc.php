@@ -18,16 +18,16 @@ if ($numeroTraspaso == 0) {
     exit;
 } else {
 
-    $lotesDetalle = json_decode($functions->getLotesXVaciarDeta($connnect, $dataTraspaso->codEspecie, $numeroTraspaso));
+    $lotesDetalle = json_decode($functions->getLotesXVaciarDeta($connnect, $dataTraspaso->codEspecie, $numeroTraspaso), true);
     $lotesVaciados = json_decode($functions->getLotesVaciados($connnect, $cliente, $proceso), true);
     $conteoBulVac = 0;
     $conteoKilVac = 0;
-    foreach ($lotesDetalle as $lote) {
-        $tarjasVaciadas =  json_decode($functions->getTotalTarjasVaciadas($connnect, $cliente, $proceso, $lote->lote));
-        if (isset($lotesVaciados[$lote->lote])) {
-            if ($lotesVaciados[$lote->lote] == $lote->canBul) {
-                $conteoBulVac += $lote->canBul;
-                $conteoKilVac += $lote->kiloNeto;
+    foreach ($lotesDetalle as $lote => $deta) {
+        $tarjasVaciadas =  json_decode($functions->getTotalTarjasVaciadas($connnect, $cliente, $proceso, $lote));
+        if (isset($lotesVaciados[$lote])) {
+            if ($lotesVaciados[$lote] == $deta['canBul']) {
+                $conteoBulVac += $deta['canBul'];
+                $conteoKilVac += $deta['kiloNeto'];
             } else {
                 $conteoBulVac += $tarjasVaciadas->canBulVac;
                 $conteoKilVac += $tarjasVaciadas->canKilVac;

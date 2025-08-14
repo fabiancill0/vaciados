@@ -158,8 +158,7 @@ fg_deta.lote_espcod = ? and fg_deta.mfge_numero = ?";
       return 0;
     } else {
       while ($row = odbc_fetch_array($resultQuery)) {
-        $info[] = [
-          'lote' => $row['lote_codigo'],
+        $info[$row['lote_codigo']] = [
           'codProd' => $row['prod_codigo'],
           'prodNombre' => $this->getNombreProductor($conex, $row['prod_codigo']),
           'kiloNeto' => $row['mfgd_kgnent'],
@@ -284,6 +283,26 @@ where pesa.fgmb_nrotar = ? and pesa.clie_codigo = ? and vaci.opve_nrtar1 is null
       $tarjas = ['canBulVac' => $row['canBulVac'], 'canKilVac' => $row['canKilVac']];
 
       return json_encode($tarjas);
+    }
+  }
+  function getOrdenLotesProceso($conex, $cliente, $orden)
+  {
+    $query = "SELECT orden.lote_codigo, orden.orpd_secuen FROM DBA.spro_ordenprocdeta as orden 
+where orden.clie_codigo = ? and orden.orpr_numero = ? order by orden.orpd_secuen";
+    $resultQuery = odbc_prepare($conex, $query);
+    $params = [$cliente, $orden];
+    odbc_execute($resultQuery, $params);
+    if (odbc_num_rows($resultQuery) == 0) {
+      return json_encode(['error' => true]);
+    } else {
+      while ($row = odbc_fetch_array($resultQuery)) {
+        $info[] = [
+          'error' => false,
+          'orden' => $row['orpd_secuen'],
+          'lote' => $row['lote_codigo']
+        ];
+      }
+      return json_encode($info);
     }
   }
   function getLotesVaciados($conex, $cliente, $proceso)
