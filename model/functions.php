@@ -128,7 +128,7 @@ and op.orpr_numero = mov.defg_docrel where op.clie_codigo = ? and op.orpr_numero
       return json_encode($detalle);
     } else {
       $row = odbc_fetch_array($resultQuery);
-      $detalle = ['error' => false, 'productor' => $this->getNombreProductor($conex, $row['prod_codigo'])];
+      $detalle = ['error' => false, 'productor' => mb_convert_encoding($this->getNombreProductor($conex, $row['prod_codigo']), 'UTF-8', 'ISO-8859-1')];
       return json_encode($detalle);
     }
   }
@@ -150,7 +150,7 @@ and op.orpr_numero = mov.defg_docrel where op.clie_codigo = ? and op.orpr_numero
   {
     $query = "SELECT (fg_deta.mfgd_kgnent * fg_deta.mfgd_bulent) as mfgd_kgnent, fg_enca.prod_codigo, fg_deta.lote_codigo, fg_deta.mfgd_bulent FROM 
 DBA.spro_movtofrutagrandeta as fg_deta join DBA.spro_lotesfrutagranel as fg_enca on fg_deta.lote_codigo = fg_enca.lote_codigo and fg_deta.lote_espcod = fg_enca.lote_espcod where 
-fg_deta.lote_espcod = ? and fg_deta.mfge_numero = ?";
+fg_deta.lote_espcod = ? and fg_deta.mfge_numero = ? and fg_deta.tpmv_codigo = 21";
     $resultQuery = odbc_prepare($conex, $query);
     $params = [$especie, $numeroMov];
     odbc_execute($resultQuery, $params);
@@ -160,7 +160,7 @@ fg_deta.lote_espcod = ? and fg_deta.mfge_numero = ?";
       while ($row = odbc_fetch_array($resultQuery)) {
         $info[$row['lote_codigo']] = [
           'codProd' => $row['prod_codigo'],
-          'prodNombre' => $this->getNombreProductor($conex, $row['prod_codigo']),
+          'prodNombre' => mb_convert_encoding($this->getNombreProductor($conex, $row['prod_codigo']), 'UTF-8', 'ISO-8859-1'),
           'kiloNeto' => $row['mfgd_kgnent'],
           'canBul' => $row['mfgd_bulent']
         ];
