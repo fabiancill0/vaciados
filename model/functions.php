@@ -148,7 +148,7 @@ and op.orpr_numero = mov.defg_docrel where op.clie_codigo = ? and op.orpr_numero
   }
   function getLotesXVaciarDeta($conex, $especie, $numeroMov)
   {
-    $query = "SELECT (fg_deta.mfgd_kgnent * fg_deta.mfgd_bulent) as mfgd_kgnent, fg_enca.prod_codigo, fg_deta.lote_codigo, fg_deta.mfgd_bulent FROM 
+    $query = "SELECT (fg_enca.lote_kilpro * fg_deta.mfgd_bulent) as mfgd_kgnent, fg_enca.prod_codigo, fg_deta.lote_codigo, fg_deta.mfgd_bulent FROM 
 DBA.spro_movtofrutagrandeta as fg_deta join DBA.spro_lotesfrutagranel as fg_enca on fg_deta.lote_codigo = fg_enca.lote_codigo and fg_deta.lote_espcod = fg_enca.lote_espcod where 
 fg_deta.lote_espcod = ? and fg_deta.mfge_numero = ? and fg_deta.tpmv_codigo = 21";
     $resultQuery = odbc_prepare($conex, $query);
