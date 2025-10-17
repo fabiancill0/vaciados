@@ -1,4 +1,8 @@
 $(document).ready(function () {
+    $('#list_procesos').load("./data/procesos_diarios.php", { cliente: $('#cliente').val() });
+    $('#cliente').on('change', function () {
+        $('#list_procesos').load("./data/procesos_diarios.php", { cliente: $('#cliente').val() });
+    });
     $('button[name="search"]').on('click', function (event) {
         var proceso = $('#proceso').val();
         var cliente = $('#cliente').val();
@@ -49,6 +53,9 @@ $(document).ready(function () {
         });
     });
 });
+function swapPlace(proceso) {
+    $('#proceso').val(proceso);
+}
 function eliminarVaciado() {
     if (confirm('Seguro deseas eliminar este movimiento?')) {
         var proceso = $('#proceso').val();
@@ -199,6 +206,8 @@ function vaciarLote(loteId, cliente, proceso) {
             console.error("Error en la solicitud:", status, error);
             console.error("Detalles de la respuesta:", xhr.responseText);
             alert('Error al procesar la solicitud' + xhr.responseText);
+            $('#' + loteId).html('<i class="fa-solid fa-caret-up fa-flip-vertical"></i> Vaciar');
+            $('#' + loteId).prop('disabled', false);
         }
     });
 }
@@ -312,9 +321,9 @@ function vaciarTarja(loteId, tarjaId, cliente, proceso) {
                 }
             } else {
                 alert(response.message);
-                $('#' + loteId + '_row_canBul').html(+$('#' + loteId + '_row_canBul').html() + 1);
-                $('#totBulVac').html(+$('#totBulVac').html() + 1);
-                $('#totKilVacReal').html(+$('#totKilVacReal').html() + +response.pesoVac)
+                $('#' + loteId + '_row_canBul').html(+$('#' + loteId + '_row_canBul').html() + +response.bulVac);
+                $('#totBulVac').html(+$('#totBulVac').html() + +response.bulVac);
+                $('#totKilVacReal').html(+$('#totKilVacReal').html() + +response.pesoVac);
                 $('#totKilVac').html(new Intl.NumberFormat("es-ES").format(+$('#totKilVacReal').html()));
                 $('#' + tarjaId).html('<i class="fa-solid fa-check"></i> Vaciado');
                 $('#' + tarjaId).prop('disabled', true);
@@ -325,6 +334,8 @@ function vaciarTarja(loteId, tarjaId, cliente, proceso) {
             console.error("Error en la solicitud:", status, error);
             console.error("Detalles de la respuesta:", xhr.responseText);
             alert('Error al procesar la solicitud' + xhr.responseText);
+            $('#' + tarjaId).html('<i class="fa-solid fa-caret-up fa-flip-vertical"></i> Vaciar');
+            $('#' + tarjaId).prop('disabled', false);
         }
     });
 }

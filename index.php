@@ -51,7 +51,7 @@ $functions = new Functions();
             </div>
             <div class="card-body">
                 <div class="row justify-content-center">
-                    <div class="col-5">
+                    <div class="col-12 col-xl-5 mb-3">
                         <label for="cliente" class="form-label">Cliente</label>
                         <select name="cliente" id="cliente" class="form-select">
                             <?php
@@ -59,11 +59,16 @@ $functions = new Functions();
                             ?>
                         </select>
                     </div>
-                    <div class="col-3">
-                        <label for="proceso" class="form-label">Proceso</label>
-                        <input type="number" name="proceso" id="proceso" class="form-control">
+                    <div class="col-12 col-xl-3">
+                        <label for="cliente" class="form-label">Procesos del día (seleccione o digite)</label>
+                        <div class="input-group mb-3">
+                            <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">N°</button>
+                            <ul class="dropdown-menu" id="list_procesos">
+                            </ul>
+                            <input type="number" name="proceso" id="proceso" class="form-control">
+                        </div>
                     </div>
-                    <div class="col-4 d-flex align-items-middle justify-content-center">
+                    <div class="col-12 col-xl-4 d-flex align-items-middle justify-content-center">
                         <button type="submit" name="search" class="btn btn-primary col-12">Cargar</button>
                     </div>
                 </div>

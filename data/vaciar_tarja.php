@@ -19,6 +19,7 @@ $connnect = $conn->connectToServ();
 $detalleTarja = json_decode($functions->getTarjaDetalle($connnect, $tarja, $cliente));
 $detalleProceso = json_decode($functions->getProcesoDetalle($connnect, $cliente, $proceso));
 $estadoProceso = json_decode($functions->getEstadoProcesoMovimento($connnect, $cliente, $proceso));
+$pesosEnvases = json_decode($functions->getPesoEnvasesTarja($connnect, $cliente, $tarja), true);
 if ($estadoProceso->estado == 0) {
     echo json_encode(['error' => 'si', 'error_type' => 4, 'message' => 'Orden de proceso no encontrada.']);
     exit;
@@ -66,6 +67,11 @@ VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 opvd_horate, lote_pltcod, lote_espcod, lote_codigo, enva_tipoen, enva_codigo, cale_calida, opvd_canbul, opve_nrtar1, opvd_pesone, opvd_pesobr, opvd_kilpro, opvd_kilori, 
 opvd_fereva) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             $result = odbc_prepare($connnect, $query);
+            $pesoBin = count($pesosEnvases) > 1 ? array_pop($pesosEnvases) : 0;
+            $pesoNeto = $detalleTarja->pesoNeto - $pesoBin;
+            $pesoProm = $pesoNeto / $detalleTarja->canBul;
+            $pesoLote += $pesoNeto;
+            $bultosTarja = $detalleTarja->canBul;
             $params = [
                 $detalleProceso->planta,
                 $detalleProceso->tipoOrd,
@@ -83,9 +89,9 @@ opvd_fereva) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
                 $detalleTarja->calidad,
                 $detalleTarja->canBul,
                 $detalleTarja->nroTarja,
-                $detalleTarja->pesoNeto,
+                $pesoNeto,
                 $detalleTarja->pesoBruto,
-                $detalleTarja->pesoNeto,
+                $pesoProm,
                 $detalleTarja->pesoNeto,
                 $detalleProceso->fecPro
             ];
@@ -99,6 +105,10 @@ opvd_fereva) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
 opvd_horate, lote_pltcod, lote_espcod, lote_codigo, enva_tipoen, enva_codigo, cale_calida, opvd_canbul, opve_nrtar1, opvd_pesone, opvd_pesobr, opvd_kilpro, opvd_kilori, 
 opvd_fereva) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             $result = odbc_prepare($connnect, $query);
+            $pesoBin = count($pesosEnvases) > 1 ? array_pop($pesosEnvases) : 0;
+            $pesoNeto = $detalleTarja->pesoNeto - $pesoBin;
+            $pesoProm = $pesoNeto / $detalleTarja->canBul;
+            $bultosTarja = $detalleTarja->canBul;
             $params = [
                 $detalleProceso->planta,
                 $detalleProceso->tipoOrd,
@@ -116,9 +126,9 @@ opvd_fereva) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
                 $detalleTarja->calidad,
                 $detalleTarja->canBul,
                 $detalleTarja->nroTarja,
-                $detalleTarja->pesoNeto,
+                $pesoNeto,
                 $detalleTarja->pesoBruto,
-                $detalleTarja->pesoNeto,
+                $pesoProm,
                 $detalleTarja->pesoNeto,
                 $detalleProceso->fecPro
             ];
@@ -128,6 +138,6 @@ opvd_fereva) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
                 exit;
             }
         }
-        echo json_encode(['error' => 'no', 'message' => 'Tarja vaciada correctamente.', 'pesoVac' => $detalleTarja->pesoNeto]);
+        echo json_encode(['error' => 'no', 'message' => 'Tarja vaciada correctamente.', 'pesoVac' => $pesoNeto, 'bulVac' => $bultosTarja]);
     }
 }

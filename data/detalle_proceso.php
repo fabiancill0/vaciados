@@ -45,8 +45,8 @@ if ($numeroTraspaso == 0) {
                         <tr id="<?= $lote->lote ?>_row">
                             <td><?= $lote->lote ?></td>
                             <td><?= number_format($lotesDetalle[$lote->lote]['kiloNeto'], 2, ',', '.') ?></td>
-                            <td><?= $lotesDetalle[$lote->lote]['canBul'] ?></td>
-                            <td id="<?= $lote->lote ?>_row_canBul"><?= $lotesDetalle[$lote->lote]['canBul'] ?></td>
+                            <td><?= number_format($lotesDetalle[$lote->lote]['canBul'], 0, '', '.') ?></td>
+                            <td id="<?= $lote->lote ?>_row_canBul"><?= number_format($lotesDetalle[$lote->lote]['canBul'], 0, '', '.') ?></td>
                             <td><button id="<?= $lote->lote ?>_deta" class="btn btn-warning" onclick="desplegarLote('<?= $lote->lote ?>', '<?= $cliente ?>', '<?= $proceso ?>')" disabled><i class="fa-solid fa-check"></i> Vaciado</button></td>
                             <td><button id="<?= $lote->lote ?>" class="btn btn-success" onclick="vaciarLote('<?= $lote->lote ?>', '<?= $cliente ?>', '<?= $proceso ?>')" disabled><i class="fa-solid fa-check"></i> Vaciado</button></td>
                         </tr>
@@ -58,8 +58,8 @@ if ($numeroTraspaso == 0) {
                         <tr id="<?= $lote->lote ?>_row">
                             <td><?= $lote->lote ?></td>
                             <td><?= number_format($lotesDetalle[$lote->lote]['kiloNeto'], 2, ',', '.') ?></td>
-                            <td><?= $lotesDetalle[$lote->lote]['canBul'] ?></td>
-                            <td id="<?= $lote->lote ?>_row_canBul"><?= $tarjasVaciadas->canBulVac ?></td>
+                            <td><?= number_format($lotesDetalle[$lote->lote]['canBul'], 0, '', '.') ?></td>
+                            <td id="<?= $lote->lote ?>_row_canBul"><?= number_format($tarjasVaciadas->canBulVac, 0, '', '.') ?></td>
                             <td><button id="<?= $lote->lote ?>_deta" class="btn btn-warning" onclick="desplegarLote('<?= $lote->lote ?>', '<?= $cliente ?>', '<?= $proceso ?>')"><i class="fa-solid fa-caret-up fa-flip-vertical"></i> Tarjas</button></td>
                             <td><button id="<?= $lote->lote ?>" class="btn btn-success" onclick="vaciarLote('<?= $lote->lote ?>', '<?= $cliente ?>', '<?= $proceso ?>')"><i class="fa-solid fa-caret-up fa-flip-vertical"></i> Vaciar</button></td>
                         </tr>
@@ -72,8 +72,8 @@ if ($numeroTraspaso == 0) {
                     <tr id="<?= $lote->lote ?>_row">
                         <td><?= $lote->lote ?></td>
                         <td><?= number_format($lotesDetalle[$lote->lote]['kiloNeto'], 2, ',', '.') ?></td>
-                        <td><?= $lotesDetalle[$lote->lote]['canBul'] ?></td>
-                        <td id="<?= $lote->lote ?>_row_canBul"><?= $tarjasVaciadas->canBulVac ?></td>
+                        <td><?= number_format($lotesDetalle[$lote->lote]['canBul'], 0, '', '.') ?></td>
+                        <td id="<?= $lote->lote ?>_row_canBul"><?= number_format($tarjasVaciadas->canBulVac, 0, '', '.') ?></td>
                         <td><button id="<?= $lote->lote ?>_deta" class="btn btn-warning" onclick="desplegarLote('<?= $lote->lote ?>', '<?= $cliente ?>', '<?= $proceso ?>')"><i class="fa-solid fa-caret-up fa-flip-vertical"></i> Tarjas</button></td>
                         <td><button id="<?= $lote->lote ?>" class="btn btn-success" onclick="vaciarLote('<?= $lote->lote ?>', '<?= $cliente ?>', '<?= $proceso ?>')"><i class="fa-solid fa-caret-up fa-flip-vertical"></i> Vaciar</button></td>
                     </tr>

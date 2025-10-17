@@ -43,7 +43,7 @@ if ($numeroTraspaso == 0) {
                 <div class="flex-fill" id="totKilVac"><?= number_format($conteoKilVac, 2, ',', '.') ?></div>
                 <div style="display:none" id="totKilVacReal"><?= $conteoKilVac ?></div>
                 <div class="flex-fill">Bultos Vaciados</div>
-                <div class="flex-fill" id="totBulVac"><?= $conteoBulVac ?></div>
+                <div class="flex-fill" id="totBulVac"><?= number_format($conteoBulVac, 0, ',', '.') ?></div>
                 <div class="flex-fill"><button class="btn btn-primary col-12" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="mostrarDetalle('<?= $cliente ?>', '<?= $proceso ?>')"><span><i class="fa-solid fa-plus"></i></span> <span role="status">Mostrar detalle</span></button></div>
             </div>
         </div>

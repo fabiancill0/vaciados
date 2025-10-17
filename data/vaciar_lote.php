@@ -19,6 +19,7 @@ $connnect = $conn->connectToServ();
 $tarjasXVaciar =  json_decode($functions->getTarjasXVaciar($connnect, $lote, $cliente));
 $detalleProceso = json_decode($functions->getProcesoDetalle($connnect, $cliente, $proceso));
 $estadoProceso = json_decode($functions->getEstadoProcesoMovimento($connnect, $cliente, $proceso));
+$pesosEnvases = json_decode($functions->getPesoEnvasesLote($connnect, $cliente, $lote), true);
 if ($estadoProceso->estado == 0) {
     echo json_encode(['error' => 'si', 'error_type' => 4, 'message' => 'Orden de proceso no encontrada.']);
     exit;
@@ -66,9 +67,13 @@ VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 opvd_horate, lote_pltcod, lote_espcod, lote_codigo, enva_tipoen, enva_codigo, cale_calida, opvd_canbul, opve_nrtar1, opvd_pesone, opvd_pesobr, opvd_kilpro, opvd_kilori, 
 opvd_fereva) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             $result = odbc_prepare($connnect, $query);
+            $pesoLote = 0;
             $bultosLote = 0;
+            $pesoBin = count($pesosEnvases) > 1 ? array_pop($pesosEnvases) : 0;
             foreach ($tarjasXVaciar as $tarja) {
-                $pesoLote += $tarja->pesoNeto;
+                $pesoNeto = $tarja->pesoNeto - $pesoBin;
+                $pesoProm = $pesoNeto / $tarja->canBul;
+                $pesoLote += $pesoNeto;
                 $bultosLote += $tarja->canBul;
                 $date->modify('+4 seconds');
                 $params = [
@@ -88,10 +93,10 @@ opvd_fereva) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
                     $tarja->calidad,
                     $tarja->canBul,
                     $tarja->nroTarja,
-                    $tarja->pesoNeto,
+                    $pesoNeto,
                     $tarja->pesoBruto,
-                    $tarja->pesoNeto,
-                    $tarja->pesoNeto,
+                    $pesoProm,
+                    $pesoNeto,
                     $detalleProceso->fecPro
                 ];
 
@@ -107,8 +112,11 @@ opvd_fereva) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
             $result = odbc_prepare($connnect, $query);
             $pesoLote = 0;
             $bultosLote = 0;
+            $pesoBin = count($pesosEnvases) > 1 ? array_pop($pesosEnvases) : 0;
             foreach ($tarjasXVaciar as $tarja) {
-                $pesoLote += $tarja->pesoNeto;
+                $pesoNeto = $tarja->pesoNeto - $pesoBin;
+                $pesoProm = $pesoNeto / $tarja->canBul;
+                $pesoLote += $pesoNeto;
                 $bultosLote += $tarja->canBul;
                 $date->modify('+4 seconds');
                 $params = [
@@ -128,10 +136,10 @@ opvd_fereva) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
                     $tarja->calidad,
                     $tarja->canBul,
                     $tarja->nroTarja,
-                    $tarja->pesoNeto,
+                    $pesoNeto,
                     $tarja->pesoBruto,
-                    $tarja->pesoNeto,
-                    $tarja->pesoNeto,
+                    $pesoProm,
+                    $pesoNeto,
                     $detalleProceso->fecPro
                 ];
 

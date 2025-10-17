@@ -39,7 +39,7 @@ if ($detalleVaciadoT1[0]->error and $detalleVaciadoT2[0]->error) {
                             <tbody>
                                 <tr>
                                     <td><?= number_format($totalVaciado[0]->kilos, 2, ',', '.') ?></td>
-                                    <td><?= $totalVaciado[0]->bultos ?></td>
+                                    <td><?= number_format($totalVaciado[0]->bultos, 0, '', '.') ?></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -70,7 +70,7 @@ if ($detalleVaciadoT1[0]->error and $detalleVaciadoT2[0]->error) {
                                     <tr>
                                         <td><?= $detalle->tramoHora ?></td>
                                         <td><?= number_format($detalle->kilos, 2, ',', '.') ?></td>
-                                        <td><?= $detalle->bultos ?></td>
+                                        <td><?= number_format($detalle->bultos, 0, '', '.') ?></td>
                                     </tr>
                                 <?php
 
@@ -105,7 +105,7 @@ if ($detalleVaciadoT1[0]->error and $detalleVaciadoT2[0]->error) {
                             <tbody>
                                 <tr>
                                     <td><?= number_format($totalVaciado[0]->kilos, 2, ',', '.') ?></td>
-                                    <td><?= $totalVaciado[0]->bultos ?></td>
+                                    <td><?= number_format($totalVaciado[0]->bultos, 0, '', '.') ?></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -136,7 +136,7 @@ if ($detalleVaciadoT1[0]->error and $detalleVaciadoT2[0]->error) {
                                     <tr>
                                         <td><?= $detalle->tramoHora ?></td>
                                         <td><?= number_format($detalle->kilos, 2, ',', '.') ?></td>
-                                        <td><?= $detalle->bultos ?></td>
+                                        <td><?= number_format($detalle->bultos, 0, '', '.') ?></td>
                                     </tr>
                                 <?php
 
@@ -171,7 +171,7 @@ if ($detalleVaciadoT1[0]->error and $detalleVaciadoT2[0]->error) {
                             <tbody>
                                 <tr>
                                     <td><?= number_format($totalVaciado[0]->kilos, 2, ',', '.') ?></td>
-                                    <td><?= $totalVaciado[0]->bultos ?></td>
+                                    <td><?= number_format($totalVaciado[0]->bultos, 0, '', '.') ?></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -202,7 +202,7 @@ if ($detalleVaciadoT1[0]->error and $detalleVaciadoT2[0]->error) {
                                     <tr>
                                         <td><?= $detalle->tramoHora ?></td>
                                         <td><?= number_format($detalle->kilos, 2, ',', '.') ?></td>
-                                        <td><?= $detalle->bultos ?></td>
+                                        <td><?= number_format($detalle->bultos, 0, '', '.') ?></td>
                                     </tr>
                                 <?php
 
@@ -231,7 +231,7 @@ if ($detalleVaciadoT1[0]->error and $detalleVaciadoT2[0]->error) {
                                     <tr>
                                         <td><?= $detalle->tramoHora ?></td>
                                         <td><?= number_format($detalle->kilos, 2, ',', '.') ?></td>
-                                        <td><?= $detalle->bultos ?></td>
+                                        <td><?= number_format($detalle->bultos, 0, '', '.') ?></td>
                                     </tr>
                                 <?php
 
