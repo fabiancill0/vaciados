@@ -9,7 +9,11 @@ $functions = new Functions();
 $cliente = $_POST['cliente'];
 $proceso = $_POST['proceso'];
 
-$connnect = $conn->connectToServ();
+if ($cliente == 15) {
+    $connnect = $conn->connectToRK();
+} else {
+    $connnect = $conn->connectToServ();
+}
 $productor =  json_decode($functions->getProductorProceso($connnect, $cliente, $proceso));
 if ($productor->error) {
     echo "<script>alert('No se encontró el número de traspaso para el cliente y proceso especificados.');</script>";

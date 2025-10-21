@@ -20,23 +20,44 @@ class Functions
   }
   function getClientesCodOrden($conn)
   {
-    $query = "SELECT pro.clie_codigo, clie.clie_nombre FROM DBA.spro_ordenproceso AS pro JOIN dba.clientesprod AS clie ON pro.clie_codigo = clie.clie_codigo
-WHERE pro.clie_codigo <> 15 GROUP BY pro.clie_codigo, clie.clie_nombre ORDER BY pro.clie_codigo";
+    $query = "SELECT pro.clie_codigo, clie.clie_nombre FROM DBA.spro_ordenproceso AS pro JOIN dba.clientesprod AS clie
+ON pro.clie_codigo = clie.clie_codigo
+group by pro.clie_codigo, clie.clie_nombre 
+ORDER BY pro.clie_codigo";
     $result = odbc_exec($conn, $query);
     while ($row = odbc_fetch_array($result)) {
       $row = array_map("utf8_encode", $row);
+      if ($row['clie_codigo'] == 15) {
       ?>
-      <option value="<?= $row['clie_codigo'] ?>"><?= $row['clie_codigo'] . ' - ' . $row['clie_nombre'] ?></option>
+        <option value="<?= $row['clie_codigo'] ?>"><?= $row['clie_codigo'] . ' - Exportadora BB Trading SpA' ?></option>
       <?php
+      } else {
+      ?>
+        <option value="<?= $row['clie_codigo'] ?>"><?= $row['clie_codigo'] . ' - ' . $row['clie_nombre'] ?></option>
+      <?php
+      }
     }
   }
   function getProcesosDiarios($conn, $cliente)
   {
-    $query = "SELECT orpr_numero FROM DBA.spro_ordenproceso
-                where orpr_fecpro in(case 
-                when hour(now()) between 0 and 5 then date(today()-1)
-                when hour(now()) between 6 and 23 then date(today())
-                end) and clie_codigo = ? order by orpr_numero";
+    $query = "DECLARE @cliente INT
+              SET @cliente = ?
+    select ordenes.orpr_numero, case when estados.proc_estado = 2 then 'Vaciando' when estados.proc_estado = 3 then 'Finalizado' else 'Por Vaciar' end as proc_estado from 
+        (SELECT orpr_numero, case when orpr_canbul > 0 then 1 end as proc_estado from DBA.spro_ordenproceso where clie_codigo = @cliente and orpr_fecpro in(case 
+            when hour(now()) between 0 and 5 then date(today()-1)
+            when hour(now()) between 6 and 23 then date(today()-1)
+            end) and orpr_tipord = 4) as ordenes
+    left join
+        (SELECT orden.orpr_numero, case when sum(deta.opvd_canbul) = orden.orpr_canbul then 3
+            when sum(deta.opvd_canbul) <> orden.orpr_canbul then 2
+            else 1 end as proc_estado
+            from dba.spro_ordenprocvacdeta as deta join DBA.spro_ordenproceso as orden
+            on deta.orpr_numero = orden.orpr_numero and deta.clie_codigo = orden.clie_codigo
+            where orden.orpr_fecpro in(case 
+            when hour(now()) between 0 and 5 then date(today()-1)
+            when hour(now()) between 6 and 23 then date(today()-1)
+            end) and orden.clie_codigo = @cliente and orden.orpr_tipord = 4 group by orden.orpr_numero, orden.orpr_canbul)
+    as estados on ordenes.orpr_numero = estados.orpr_numero order by ordenes.orpr_numero";
     $resultQuery = odbc_prepare($conn, $query);
     odbc_execute($resultQuery, [$cliente]);
     while ($row = odbc_fetch_array($resultQuery)) {
@@ -44,9 +65,14 @@ WHERE pro.clie_codigo <> 15 GROUP BY pro.clie_codigo, clie.clie_nombre ORDER BY 
       ?>
         <li>No hay procesos del cliente seleccionado</li>
       <?php
+      } else if ($row['proc_estado'] == 'Finalizado') {
+      ?>
+        <li><a class="dropdown-item disabled"><?= $row['orpr_numero'] . ' - ' . $row['proc_estado'] ?></a></li>
+
+      <?php
       } else {
       ?>
-        <li><a class="dropdown-item" onclick="swapPlace('<?= $row['orpr_numero'] ?>')"><?= $row['orpr_numero'] ?></a></li>
+        <li><a class="dropdown-item" onclick="swapPlace('<?= $row['orpr_numero'] ?>')"><?= $row['orpr_numero'] . ' - ' . $row['proc_estado'] ?></a></li>
 <?php
       }
     }
@@ -103,7 +129,7 @@ WHERE pro.clie_codigo <> 15 GROUP BY pro.clie_codigo, clie.clie_nombre ORDER BY 
   function getEstadoProcesoMovimento($conex, $cliente, $proceso)
   {
     $query = "SELECT op.orpr_estado, mov.mfge_estmov FROM DBA.spro_ordenproceso as op join DBA.spro_movtofrutagranenca as mov on op.clie_codigo = mov.clie_codigo
-and op.orpr_numero = mov.defg_docrel where op.clie_codigo = ? and op.orpr_numero = ?";
+and op.orpr_numero = mov.defg_docrel where op.clie_codigo = ? and op.orpr_numero = ? and op.orpr_tipord = 4";
     $resultQuery = odbc_prepare($conex, $query);
     odbc_execute($resultQuery, [$cliente, $proceso]);
     if (odbc_num_rows($resultQuery) == 0) {
@@ -120,7 +146,7 @@ and op.orpr_numero = mov.defg_docrel where op.clie_codigo = ? and op.orpr_numero
   }
   function getProcesoDetalle($conex, $cliente, $proceso)
   {
-    $query = "SELECT plde_codigo, orpr_tipord, orpr_fecpro, orpr_nrotur, line_codigo FROM DBA.spro_ordenproceso where clie_codigo = ? and orpr_numero = ?";
+    $query = "SELECT plde_codigo, orpr_tipord, orpr_fecpro, orpr_nrotur, line_codigo FROM DBA.spro_ordenproceso where clie_codigo = ? and orpr_numero = ? and orpr_tipord = 4";
     $resultQuery = odbc_prepare($conex, $query);
     odbc_execute($resultQuery, array($cliente, $proceso));
     if (odbc_num_rows($resultQuery) == 0) {
@@ -195,7 +221,7 @@ fg_deta.lote_espcod = ? and fg_deta.mfge_numero = ? and fg_deta.tpmv_codigo = 21
 sum(pesa.mfgp_pesore - bins.enva_pesone) as mfgp_pesone, sum(pesa.mfgp_pesore) as mfgp_pesore FROM DBA.spro_movtofrutagranpesa as pesa join 
 (SELECT enva.enva_pesone, bin.enva_tipoen, bin.enva_codigo, bin.cale_calida, bin.bins_numero from dba.spro_bins as bin join dba.envases as enva on bin.enva_tipoen = enva.enva_tipoen 
 and bin.enva_codigo = enva.enva_codigo where bin.clie_codigo = ?) as bins on  pesa.bins_numero = bins.bins_numero left join dba.spro_ordenprocvacdeta as vaci on pesa.fgmb_nrotar = vaci.opve_nrtar1
-where pesa.lote_codigo = ? and pesa.clie_codigo = ? and vaci.opve_nrtar1 is null group by pesa.lote_pltcod, pesa.lote_espcod, pesa.lote_codigo, bins.enva_tipoen, bins.enva_codigo, bins.cale_calida, pesa.fgmb_nrotar order by pesa.fgmb_nrotar";
+where pesa.lote_codigo = ? and pesa.clie_codigo = ? and vaci.opve_nrtar1 is null and vaci.orpr_tipord = 4 group by pesa.lote_pltcod, pesa.lote_espcod, pesa.lote_codigo, bins.enva_tipoen, bins.enva_codigo, bins.cale_calida, pesa.fgmb_nrotar order by pesa.fgmb_nrotar";
     $resultQuery = odbc_prepare($conex, $query);
     odbc_execute($resultQuery, [$cliente, $lotes, $cliente]);
     if (odbc_num_rows($resultQuery) == 0) {
@@ -225,7 +251,7 @@ where pesa.lote_codigo = ? and pesa.clie_codigo = ? and vaci.opve_nrtar1 is null
 pesa.fgmb_nrotar,sum((pesa.mfgp_pesore - bins.enva_pesone)) as mfgp_pesone, sum(pesa.mfgp_pesore) as mfgp_pesore
 FROM DBA.spro_movtofrutagranpesa as pesa join (SELECT enva.enva_pesone, bin.enva_tipoen, bin.enva_codigo, bin.cale_calida, bin.bins_numero from dba.spro_bins as bin join dba.envases as enva on bin.enva_tipoen = enva.enva_tipoen 
 and bin.enva_codigo = enva.enva_codigo where bin.clie_codigo = ?) as bins on  pesa.bins_numero = bins.bins_numero left join dba.spro_ordenprocvacdeta as vaci on pesa.fgmb_nrotar = vaci.opve_nrtar1
-where pesa.lote_codigo = ? and pesa.clie_codigo = ?  group by pesa.lote_pltcod, pesa.lote_espcod, pesa.lote_codigo, bins.enva_tipoen, bins.enva_codigo, bins.cale_calida, pesa.fgmb_nrotar order by pesa.fgmb_nrotar";
+where pesa.lote_codigo = ? and pesa.clie_codigo = ? and vaci.orpr_tipord = 4 group by pesa.lote_pltcod, pesa.lote_espcod, pesa.lote_codigo, bins.enva_tipoen, bins.enva_codigo, bins.cale_calida, pesa.fgmb_nrotar order by pesa.fgmb_nrotar";
     $resultQuery = odbc_prepare($conex, $query);
     odbc_execute($resultQuery, [$cliente, $lotes, $cliente]);
     if (odbc_num_rows($resultQuery) == 0) {
@@ -293,7 +319,7 @@ and deta.tpmv_codigo = 41 and enca.clie_codigo = ? group by deta.fgme_cantid, de
 pesa.fgmb_nrotar,sum((pesa.mfgp_pesore - bins.enva_pesone)) as mfgp_pesone, sum(pesa.mfgp_pesore) as mfgp_pesore
 FROM DBA.spro_movtofrutagranpesa as pesa join (SELECT enva.enva_pesone, bin.enva_tipoen, bin.enva_codigo, bin.cale_calida, bin.bins_numero from dba.spro_bins as bin join dba.envases as enva on bin.enva_tipoen = enva.enva_tipoen 
 and bin.enva_codigo = enva.enva_codigo where bin.clie_codigo = ?) as bins on  pesa.bins_numero = bins.bins_numero left join dba.spro_ordenprocvacdeta as vaci on pesa.fgmb_nrotar = vaci.opve_nrtar1
-where pesa.fgmb_nrotar = ? and pesa.clie_codigo = ? and vaci.opve_nrtar1 is null group by pesa.lote_pltcod, pesa.lote_espcod, pesa.lote_codigo, bins.enva_tipoen, bins.enva_codigo, bins.cale_calida, pesa.fgmb_nrotar order by pesa.fgmb_nrotar";
+where pesa.fgmb_nrotar = ? and pesa.clie_codigo = ? and vaci.opve_nrtar1 is null and vaci.orpr_tipord = 4 group by pesa.lote_pltcod, pesa.lote_espcod, pesa.lote_codigo, bins.enva_tipoen, bins.enva_codigo, bins.cale_calida, pesa.fgmb_nrotar order by pesa.fgmb_nrotar";
     $resultQuery = odbc_prepare($conex, $query);
     odbc_execute($resultQuery, [$cliente, $tarja, $cliente]);
     if (odbc_num_rows($resultQuery) == 0) {
@@ -319,7 +345,7 @@ where pesa.fgmb_nrotar = ? and pesa.clie_codigo = ? and vaci.opve_nrtar1 is null
   }
   function getTarjasVaciadas($conex, $cliente, $lote)
   {
-    $query = "SELECT opve_nrtar1 from dba.spro_ordenprocvacdeta where clie_codigo = ? and lote_codigo = ?";
+    $query = "SELECT opve_nrtar1 from dba.spro_ordenprocvacdeta where clie_codigo = ? and lote_codigo = ? and orpr_tipord = 4";
     $resultQuery = odbc_prepare($conex, $query);
     odbc_execute($resultQuery, [$cliente, $lote]);
     if (odbc_num_rows($resultQuery) == 0) {
@@ -334,7 +360,7 @@ where pesa.fgmb_nrotar = ? and pesa.clie_codigo = ? and vaci.opve_nrtar1 is null
   }
   function getTotalTarjasVaciadas($conex, $cliente, $proceso, $lote)
   {
-    $query = "SELECT sum(opvd_canbul) as canBulVac, sum(opvd_pesone) as canKilVac from dba.spro_ordenprocvacdeta where clie_codigo = ? and orpr_numero = ? and lote_codigo = ?";
+    $query = "SELECT sum(opvd_canbul) as canBulVac, sum(opvd_pesone) as canKilVac from dba.spro_ordenprocvacdeta where clie_codigo = ? and orpr_numero = ? and orpr_tipord = 4 and lote_codigo = ?";
     $resultQuery = odbc_prepare($conex, $query);
     odbc_execute($resultQuery, [$cliente, $proceso, $lote]);
     if (odbc_num_rows($resultQuery) == 0) {
@@ -350,7 +376,7 @@ where pesa.fgmb_nrotar = ? and pesa.clie_codigo = ? and vaci.opve_nrtar1 is null
   function getOrdenLotesProceso($conex, $cliente, $orden)
   {
     $query = "SELECT orden.lote_codigo, orden.orpd_secuen FROM DBA.spro_ordenprocdeta as orden 
-where orden.clie_codigo = ? and orden.orpr_numero = ? order by orden.orpd_secuen";
+where orden.clie_codigo = ? and orden.orpr_numero = ? and orpr_tipord = 4 order by orden.orpd_secuen";
     $resultQuery = odbc_prepare($conex, $query);
     $params = [$cliente, $orden];
     odbc_execute($resultQuery, $params);
@@ -369,7 +395,7 @@ where orden.clie_codigo = ? and orden.orpr_numero = ? order by orden.orpd_secuen
   }
   function getLotesVaciados($conex, $cliente, $proceso)
   {
-    $query = "SELECT lote_codigo, sum(opvd_canbul) as canBul from dba.spro_ordenprocvacdeta where clie_codigo = ? and orpr_numero = ? group by lote_codigo";
+    $query = "SELECT lote_codigo, sum(opvd_canbul) as canBul from dba.spro_ordenprocvacdeta where clie_codigo = ? and orpr_numero = ? and orpr_tipord = 4 group by lote_codigo";
     $resultQuery = odbc_prepare($conex, $query);
     odbc_execute($resultQuery, [$cliente, $proceso]);
     if (odbc_num_rows($resultQuery) == 0) {
@@ -456,7 +482,7 @@ when horas = 19 then 2
 when horas = 20 then 3
 when horas = 21 then 4
 when horas = 22 then 5
-else 6 end as secuencia FROM DBA.spro_ordenprocvacdeta where opve_fecvac = ? AND turno = ? group by horas order by secuencia";
+else 6 end as secuencia FROM DBA.spro_ordenprocvacdeta where opve_fecvac = ? AND turno = ? and orpr_tipord = 4 group by horas order by secuencia";
     $resultQuery = odbc_prepare($conex, $query);
     odbc_execute($resultQuery, [$fecha, $turno]);
     if (odbc_num_rows($resultQuery) == 0) {
@@ -473,7 +499,7 @@ else 6 end as secuencia FROM DBA.spro_ordenprocvacdeta where opve_fecvac = ? AND
   }
   function getTotalVaciado($conex, $fecha)
   {
-    $query = "SELECT sum(opvd_pesone) as kilos, sum(opvd_canbul) as bultos FROM DBA.spro_ordenprocvacdeta where opve_fecvac = ?";
+    $query = "SELECT sum(opvd_pesone) as kilos, sum(opvd_canbul) as bultos FROM DBA.spro_ordenprocvacdeta where opve_fecvac = ? and orpr_tipord = 4";
     $resultQuery = odbc_prepare($conex, $query);
     odbc_execute($resultQuery, [$fecha]);
     if (odbc_num_rows($resultQuery) == 0) {

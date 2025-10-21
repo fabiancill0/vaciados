@@ -15,7 +15,11 @@ $lote = $_POST['loteId'];
 //$proceso = 75;
 //$lote = 8145;
 
-$connnect = $conn->connectToServ();
+if ($cliente == 15) {
+    $connnect = $conn->connectToRK();
+} else {
+    $connnect = $conn->connectToServ();
+}
 $tarjasXVaciar =  json_decode($functions->getTarjasXVaciar($connnect, $lote, $cliente));
 $detalleProceso = json_decode($functions->getProcesoDetalle($connnect, $cliente, $proceso));
 $estadoProceso = json_decode($functions->getEstadoProcesoMovimento($connnect, $cliente, $proceso));

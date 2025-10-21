@@ -2,8 +2,10 @@
 
 class Connections
 {
-  private $dbServ = "ProdServFtgo_2024";
-  private $dbRK = "ProdFrutango_2024";
+  private $dbServ = "ProdServFtgo_2025";
+  private $dbRK = "ProdFrutango_2025";
+  private $dbServ2024 = "ProdServFtgo_2024";
+  private $dbRK2024 = "ProdFrutango_2024";
   private $username = "fcarrasco";
   private $pass = "jygtsygp";
 

@@ -1,6 +1,8 @@
 $(document).ready(function () {
-    $('#list_procesos').load("./data/procesos_diarios.php", { cliente: $('#cliente').val() });
     $('#cliente').on('change', function () {
+        $('#list_procesos').load("./data/procesos_diarios.php", { cliente: $('#cliente').val() });
+    });
+    $('#ordenes').on('click', function () {
         $('#list_procesos').load("./data/procesos_diarios.php", { cliente: $('#cliente').val() });
     });
     $('button[name="search"]').on('click', function (event) {
@@ -55,6 +57,7 @@ $(document).ready(function () {
 });
 function swapPlace(proceso) {
     $('#proceso').val(proceso);
+    $('button[name="search"]').trigger('click');
 }
 function eliminarVaciado() {
     if (confirm('Seguro deseas eliminar este movimiento?')) {

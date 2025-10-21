@@ -8,7 +8,11 @@ $functions = new Functions();
 $cliente = $_POST['cliente'];
 $proceso = $_POST['proceso'];
 
-$connnect = $conn->connectToServ();
+if ($cliente == 15) {
+    $connnect = $conn->connectToRK();
+} else {
+    $connnect = $conn->connectToServ();
+}
 
 $queryDelete = "DELETE FROM dba.spro_ordenprocvacdeta WHERE orpr_numero = ? AND clie_codigo = ?";
 $resultDelete = odbc_prepare($connnect, $queryDelete);

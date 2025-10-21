@@ -15,7 +15,11 @@ $tarja = $_POST['tarjaId'];
 //$proceso = 75;
 //$tarja = 8145;
 
-$connnect = $conn->connectToServ();
+if ($cliente == 15) {
+    $connnect = $conn->connectToRK();
+} else {
+    $connnect = $conn->connectToServ();
+}
 $detalleTarja = json_decode($functions->getTarjaDetalle($connnect, $tarja, $cliente));
 $detalleProceso = json_decode($functions->getProcesoDetalle($connnect, $cliente, $proceso));
 $estadoProceso = json_decode($functions->getEstadoProcesoMovimento($connnect, $cliente, $proceso));
@@ -70,7 +74,6 @@ opvd_fereva) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
             $pesoBin = count($pesosEnvases) > 1 ? array_pop($pesosEnvases) : 0;
             $pesoNeto = $detalleTarja->pesoNeto - $pesoBin;
             $pesoProm = $pesoNeto / $detalleTarja->canBul;
-            $pesoLote += $pesoNeto;
             $bultosTarja = $detalleTarja->canBul;
             $params = [
                 $detalleProceso->planta,

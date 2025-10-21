@@ -61,15 +61,15 @@ $functions = new Functions();
                     </div>
                     <div class="col-12 col-xl-3">
                         <label for="cliente" class="form-label">Procesos del día (seleccione o digite)</label>
-                        <div class="input-group mb-3">
-                            <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">N°</button>
+                        <div class="input-group mb-3 dropdown-center">
+                            <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="ordenes" data-bs-toggle="dropdown" aria-expanded="false">N°</button>
                             <ul class="dropdown-menu" id="list_procesos">
                             </ul>
                             <input type="number" name="proceso" id="proceso" class="form-control">
                         </div>
                     </div>
                     <div class="col-12 col-xl-4 d-flex align-items-middle justify-content-center">
-                        <button type="submit" name="search" class="btn btn-primary col-12">Cargar</button>
+                        <button type="submit" name="search" id="search" class="btn btn-primary col-12">Cargar</button>
                     </div>
                 </div>
             </div>

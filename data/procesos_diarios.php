@@ -5,4 +5,9 @@ include '../model/functions.php';
 $conn = new Connections();
 $functions = new Functions();
 $cliente = $_POST['cliente'];
-$functions->getProcesosDiarios($conn->connectToServ(), $cliente);
+if ($cliente == 15) {
+    $connnect = $conn->connectToRK();
+} else {
+    $connnect = $conn->connectToServ();
+}
+$functions->getProcesosDiarios($connnect, $cliente);

@@ -10,7 +10,11 @@ $functions = new Functions();
 $cliente = $_POST['cliente'];
 $proceso = $_POST['proceso'];
 
-$connnect = $conn->connectToServ();
+if ($cliente == 15) {
+    $connnect = $conn->connectToRK();
+} else {
+    $connnect = $conn->connectToServ();
+}
 $dataTraspaso = json_decode($functions->getNumeroTraspaso($connnect, $cliente, $proceso));
 $numeroTraspaso = $dataTraspaso->nroTraspaso;
 if ($numeroTraspaso == 0) {

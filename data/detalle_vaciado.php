@@ -9,7 +9,11 @@ $functions = new Functions();
 $cliente = $_POST['cliente'];
 $proceso = $_POST['proceso'];
 
-$connnect = $conn->connectToServ();
+if ($cliente == 15) {
+    $connnect = $conn->connectToRK();
+} else {
+    $connnect = $conn->connectToServ();
+}
 $detalleProceso = json_decode($functions->getProcesoDetalle($connnect, $cliente, $proceso));
 $detalleVaciadoT1 =  json_decode($functions->getDetalleVaciado($connnect, $detalleProceso->fecPro, 1));
 $detalleVaciadoT2 =  json_decode($functions->getDetalleVaciado($connnect, $detalleProceso->fecPro, 2));

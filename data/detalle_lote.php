@@ -11,7 +11,11 @@ $lote = $_POST['loteId'];
 $cliente = $_POST['cliente'];
 $proceso = $_POST['proceso'];
 
-$connnect = $conn->connectToServ();
+if ($cliente == 15) {
+    $connnect = $conn->connectToRK();
+} else {
+    $connnect = $conn->connectToServ();
+}
 $tarjasXVaciar =  json_decode($functions->getTarjasHistoricas($connnect, $lote, $cliente));
 $tarjasVaciadas =  json_decode($functions->getTarjasVaciadas($connnect, $cliente, $lote), true);
 $pesosEnvases = json_decode($functions->getPesoEnvasesLote($connnect, $cliente, $lote), true);
