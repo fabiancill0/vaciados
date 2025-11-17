@@ -45,7 +45,7 @@ ORDER BY pro.clie_codigo";
     select ordenes.orpr_numero, case when estados.proc_estado = 2 then 'Vaciando' when estados.proc_estado = 3 then 'Finalizado' else 'Por Vaciar' end as proc_estado from 
         (SELECT orpr_numero, case when orpr_canbul > 0 then 1 end as proc_estado from DBA.spro_ordenproceso where clie_codigo = @cliente and orpr_fecpro in(case 
             when hour(now()) between 0 and 5 then date(today()-1)
-            when hour(now()) between 6 and 23 then date(today()-1)
+            when hour(now()) between 6 and 23 then date(today())
             end) and orpr_tipord = 4) as ordenes
     left join
         (SELECT orden.orpr_numero, case when sum(deta.opvd_canbul) = orden.orpr_canbul then 3
@@ -55,7 +55,7 @@ ORDER BY pro.clie_codigo";
             on deta.orpr_numero = orden.orpr_numero and deta.clie_codigo = orden.clie_codigo
             where orden.orpr_fecpro in(case 
             when hour(now()) between 0 and 5 then date(today()-1)
-            when hour(now()) between 6 and 23 then date(today()-1)
+            when hour(now()) between 6 and 23 then date(today())
             end) and orden.clie_codigo = @cliente and orden.orpr_tipord = 4 group by orden.orpr_numero, orden.orpr_canbul)
     as estados on ordenes.orpr_numero = estados.orpr_numero order by ordenes.orpr_numero";
     $resultQuery = odbc_prepare($conn, $query);
@@ -221,7 +221,7 @@ fg_deta.lote_espcod = ? and fg_deta.mfge_numero = ? and fg_deta.tpmv_codigo = 21
 sum(pesa.mfgp_pesore - bins.enva_pesone) as mfgp_pesone, sum(pesa.mfgp_pesore) as mfgp_pesore FROM DBA.spro_movtofrutagranpesa as pesa join 
 (SELECT enva.enva_pesone, bin.enva_tipoen, bin.enva_codigo, bin.cale_calida, bin.bins_numero from dba.spro_bins as bin join dba.envases as enva on bin.enva_tipoen = enva.enva_tipoen 
 and bin.enva_codigo = enva.enva_codigo where bin.clie_codigo = ?) as bins on  pesa.bins_numero = bins.bins_numero left join dba.spro_ordenprocvacdeta as vaci on pesa.fgmb_nrotar = vaci.opve_nrtar1
-where pesa.lote_codigo = ? and pesa.clie_codigo = ? and vaci.opve_nrtar1 is null and vaci.orpr_tipord = 4 group by pesa.lote_pltcod, pesa.lote_espcod, pesa.lote_codigo, bins.enva_tipoen, bins.enva_codigo, bins.cale_calida, pesa.fgmb_nrotar order by pesa.fgmb_nrotar";
+where pesa.lote_codigo = ? and pesa.clie_codigo = ? and vaci.opve_nrtar1 is null group by pesa.lote_pltcod, pesa.lote_espcod, pesa.lote_codigo, bins.enva_tipoen, bins.enva_codigo, bins.cale_calida, pesa.fgmb_nrotar order by pesa.fgmb_nrotar";
     $resultQuery = odbc_prepare($conex, $query);
     odbc_execute($resultQuery, [$cliente, $lotes, $cliente]);
     if (odbc_num_rows($resultQuery) == 0) {
@@ -251,7 +251,7 @@ where pesa.lote_codigo = ? and pesa.clie_codigo = ? and vaci.opve_nrtar1 is null
 pesa.fgmb_nrotar,sum((pesa.mfgp_pesore - bins.enva_pesone)) as mfgp_pesone, sum(pesa.mfgp_pesore) as mfgp_pesore
 FROM DBA.spro_movtofrutagranpesa as pesa join (SELECT enva.enva_pesone, bin.enva_tipoen, bin.enva_codigo, bin.cale_calida, bin.bins_numero from dba.spro_bins as bin join dba.envases as enva on bin.enva_tipoen = enva.enva_tipoen 
 and bin.enva_codigo = enva.enva_codigo where bin.clie_codigo = ?) as bins on  pesa.bins_numero = bins.bins_numero left join dba.spro_ordenprocvacdeta as vaci on pesa.fgmb_nrotar = vaci.opve_nrtar1
-where pesa.lote_codigo = ? and pesa.clie_codigo = ? and vaci.orpr_tipord = 4 group by pesa.lote_pltcod, pesa.lote_espcod, pesa.lote_codigo, bins.enva_tipoen, bins.enva_codigo, bins.cale_calida, pesa.fgmb_nrotar order by pesa.fgmb_nrotar";
+where pesa.lote_codigo = ? and pesa.clie_codigo = ? group by pesa.lote_pltcod, pesa.lote_espcod, pesa.lote_codigo, bins.enva_tipoen, bins.enva_codigo, bins.cale_calida, pesa.fgmb_nrotar order by pesa.fgmb_nrotar";
     $resultQuery = odbc_prepare($conex, $query);
     odbc_execute($resultQuery, [$cliente, $lotes, $cliente]);
     if (odbc_num_rows($resultQuery) == 0) {
@@ -319,7 +319,7 @@ and deta.tpmv_codigo = 41 and enca.clie_codigo = ? group by deta.fgme_cantid, de
 pesa.fgmb_nrotar,sum((pesa.mfgp_pesore - bins.enva_pesone)) as mfgp_pesone, sum(pesa.mfgp_pesore) as mfgp_pesore
 FROM DBA.spro_movtofrutagranpesa as pesa join (SELECT enva.enva_pesone, bin.enva_tipoen, bin.enva_codigo, bin.cale_calida, bin.bins_numero from dba.spro_bins as bin join dba.envases as enva on bin.enva_tipoen = enva.enva_tipoen 
 and bin.enva_codigo = enva.enva_codigo where bin.clie_codigo = ?) as bins on  pesa.bins_numero = bins.bins_numero left join dba.spro_ordenprocvacdeta as vaci on pesa.fgmb_nrotar = vaci.opve_nrtar1
-where pesa.fgmb_nrotar = ? and pesa.clie_codigo = ? and vaci.opve_nrtar1 is null and vaci.orpr_tipord = 4 group by pesa.lote_pltcod, pesa.lote_espcod, pesa.lote_codigo, bins.enva_tipoen, bins.enva_codigo, bins.cale_calida, pesa.fgmb_nrotar order by pesa.fgmb_nrotar";
+where pesa.fgmb_nrotar = ? and pesa.clie_codigo = ? and vaci.opve_nrtar1 is null group by pesa.lote_pltcod, pesa.lote_espcod, pesa.lote_codigo, bins.enva_tipoen, bins.enva_codigo, bins.cale_calida, pesa.fgmb_nrotar order by pesa.fgmb_nrotar";
     $resultQuery = odbc_prepare($conex, $query);
     odbc_execute($resultQuery, [$cliente, $tarja, $cliente]);
     if (odbc_num_rows($resultQuery) == 0) {
