@@ -47,7 +47,8 @@ $functions = new Functions();
     <div class="container-fluid mt-3">
         <div class="card">
             <div class="card-header">
-                <h3 class="text-center">Vaciado lotes orden de proceso</h3>
+                <a style="position:absolute; z-index: 100" href="http://190.196.68.187/app_hub"><button class="btn btn-primary btn-lg" type="button" id="button-addon1"><i class="fa-solid fa-house"></i></button></a>
+                <h3 class="text-center mb-3">Vaciado orden de proceso</h3>
             </div>
             <div class="card-body">
                 <div class="row justify-content-center">
