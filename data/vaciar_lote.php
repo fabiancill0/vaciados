@@ -75,7 +75,7 @@ opvd_fereva) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
             $bultosLote = 0;
             $pesoBin = count($pesosEnvases) > 1 ? array_pop($pesosEnvases) : 0;
             foreach ($tarjasXVaciar as $tarja) {
-                $pesoNeto = $tarja->pesoNeto;
+                $pesoNeto = $tarja->pesoNeto - $pesoBin;
                 $pesoProm = $pesoNeto / $tarja->canBul;
                 $pesoLote += $pesoNeto;
                 $bultosLote += $tarja->canBul;
@@ -118,7 +118,7 @@ opvd_fereva) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
             $bultosLote = 0;
             $pesoBin = count($pesosEnvases) > 1 ? array_pop($pesosEnvases) : 0;
             foreach ($tarjasXVaciar as $tarja) {
-                $pesoNeto = $tarja->pesoNeto;
+                $pesoNeto = $tarja->pesoNeto - $pesoBin;
                 $pesoProm = $pesoNeto / $tarja->canBul;
                 $pesoLote += $pesoNeto;
                 $bultosLote += $tarja->canBul;
