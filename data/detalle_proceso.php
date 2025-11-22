@@ -70,9 +70,20 @@ if ($numeroTraspaso == 0) {
 
                     <?php
                     }
-                } else {
+                } else if (!isset($lotesDetalle[$lote->lote])) {
                     ?>
-
+                    <tr id="<?= $lote->lote ?>_row">
+                        <td colspan="6">
+                            <div class="alert alert-danger" role="alert">
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                                <strong>Importante!</strong> Lote <strong><?= $lote->lote ?></strong> no se encuentra dentro del traspaso.
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                            </div>
+                        </td>
+                    </tr>
+                <?php
+                } else {
+                ?>
                     <tr id="<?= $lote->lote ?>_row">
                         <td><?= $lote->lote ?></td>
                         <td><?= number_format($lotesDetalle[$lote->lote]['kiloNeto'], 2, ',', '.') ?></td>
