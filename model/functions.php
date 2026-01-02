@@ -220,8 +220,10 @@ fg_deta.lote_espcod = ? and fg_deta.mfge_numero = ? and fg_deta.tpmv_codigo = 21
     $query = "SELECT pesa.lote_pltcod, pesa.lote_espcod, pesa.lote_codigo, bins.enva_tipoen, bins.enva_codigo, bins.cale_calida , sum(pesa.mfgp_canbul) as mfgp_canbul, pesa.fgmb_nrotar,
 sum(pesa.mfgp_pesore - bins.enva_pesone) as mfgp_pesone, sum(pesa.mfgp_pesore) as mfgp_pesore FROM DBA.spro_movtofrutagranpesa as pesa join 
 (SELECT enva.enva_pesone, bin.enva_tipoen, bin.enva_codigo, bin.cale_calida, bin.bins_numero from dba.spro_bins as bin join dba.envases as enva on bin.enva_tipoen = enva.enva_tipoen 
-and bin.enva_codigo = enva.enva_codigo where bin.clie_codigo = ?) as bins on  pesa.bins_numero = bins.bins_numero left join dba.spro_ordenprocvacdeta as vaci on pesa.fgmb_nrotar = vaci.opve_nrtar1
-where pesa.lote_codigo = ? and pesa.clie_codigo = ? and vaci.opve_nrtar1 is null group by pesa.lote_pltcod, pesa.lote_espcod, pesa.lote_codigo, bins.enva_tipoen, bins.enva_codigo, bins.cale_calida, pesa.fgmb_nrotar order by pesa.fgmb_nrotar";
+and bin.enva_codigo = enva.enva_codigo where bin.clie_codigo = ?) as bins on  pesa.bins_numero = bins.bins_numero
+left join dba.spro_ordenprocvacdeta as vaci on pesa.fgmb_nrotar = vaci.opve_nrtar1
+where pesa.lote_codigo = ? and pesa.clie_codigo = ? and vaci.opve_nrtar1 is null
+group by pesa.lote_pltcod, pesa.lote_espcod, pesa.lote_codigo, bins.enva_tipoen, bins.enva_codigo, bins.cale_calida, pesa.fgmb_nrotar order by pesa.fgmb_nrotar";
     $resultQuery = odbc_prepare($conex, $query);
     odbc_execute($resultQuery, [$cliente, $lotes, $cliente]);
     if (odbc_num_rows($resultQuery) == 0) {
@@ -278,8 +280,7 @@ where pesa.lote_codigo = ? and pesa.clie_codigo = ? group by pesa.lote_pltcod, p
   function getPesoEnvasesLote($conex, $cliente, $lote)
   {
     $query = "SELECT deta.enva_codigo, deta.fgme_pesone from dba.spro_movtoenvadeta as deta left join dba.spro_movtoenvaenca as enca
-on enca.meen_numero = deta.meen_numero
-where deta.meen_numero in(select meen_numero from dba.spro_movtoenvaenca where 
+on enca.meen_numero = deta.meen_numero where deta.meen_numero in(select meen_numero from dba.spro_movtoenvaenca where
 mfge_numero in(select mfge_numero from dba.spro_movtofrutagrandeta where tpmv_codigo = 1 and lote_codigo = ?) and clie_codigo = ?)
 and deta.tpmv_codigo = 41 and enca.clie_codigo = ? group by deta.fgme_cantid, deta.fgme_pesone, deta.enva_codigo order by enva_codigo";
     $resultQuery = odbc_prepare($conex, $query);
@@ -297,8 +298,7 @@ and deta.tpmv_codigo = 41 and enca.clie_codigo = ? group by deta.fgme_cantid, de
   function getPesoEnvasesTarja($conex, $cliente, $tarja)
   {
     $query = "SELECT deta.enva_codigo, deta.fgme_pesone from dba.spro_movtoenvadeta as deta left join dba.spro_movtoenvaenca as enca
-on enca.meen_numero = deta.meen_numero
-where deta.meen_numero in(select meen_numero from dba.spro_movtoenvaenca where 
+on enca.meen_numero = deta.meen_numero where deta.meen_numero in(select meen_numero from dba.spro_movtoenvaenca where 
 mfge_numero in(select mfge_numero from dba.spro_movtofrutagranpesa where tpmv_codigo = 1 and fgmb_nrotar = ?) and clie_codigo = ?)
 and deta.tpmv_codigo = 41 and enca.clie_codigo = ? group by deta.fgme_cantid, deta.fgme_pesone, deta.enva_codigo order by enva_codigo";
     $resultQuery = odbc_prepare($conex, $query);

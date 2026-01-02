@@ -76,9 +76,9 @@ $functions = new Functions();
             </div>
         </div>
         <div id="prod"></div>
-        <div id="orden" class="table-container">
-        </div>
+        <div id="orden" class="table-container"></div>
         <div id="total_proc"></div>
+        <div style="height: 70px"></div>
         <div class="modal modal-xl fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content" id="deta_proc">

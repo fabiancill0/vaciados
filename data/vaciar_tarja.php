@@ -72,7 +72,11 @@ opvd_horate, lote_pltcod, lote_espcod, lote_codigo, enva_tipoen, enva_codigo, ca
 opvd_fereva) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             $result = odbc_prepare($connnect, $query);
             $pesoBin = count($pesosEnvases) > 1 ? array_pop($pesosEnvases) : 0;
-            $pesoNeto = $detalleTarja->pesoNeto - $pesoBin;
+            if ($detalleTarja->especie != 21) {
+                $pesoNeto = $detalleTarja->pesoNeto;
+            } else {
+                $pesoNeto = $detalleTarja->pesoNeto - $pesoBin;
+            }
             $pesoProm = $pesoNeto / $detalleTarja->canBul;
             $bultosTarja = $detalleTarja->canBul;
             $params = [
@@ -109,7 +113,11 @@ opvd_horate, lote_pltcod, lote_espcod, lote_codigo, enva_tipoen, enva_codigo, ca
 opvd_fereva) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             $result = odbc_prepare($connnect, $query);
             $pesoBin = count($pesosEnvases) > 1 ? array_pop($pesosEnvases) : 0;
-            $pesoNeto = $detalleTarja->pesoNeto - $pesoBin;
+            if ($detalleTarja->especie != 21) {
+                $pesoNeto = $detalleTarja->pesoNeto;
+            } else {
+                $pesoNeto = $detalleTarja->pesoNeto - $pesoBin;
+            }
             $pesoProm = $pesoNeto / $detalleTarja->canBul;
             $bultosTarja = $detalleTarja->canBul;
             $params = [

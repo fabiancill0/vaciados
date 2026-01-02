@@ -20,6 +20,7 @@ if ($cliente == 15) {
 } else {
     $connnect = $conn->connectToServ();
 }
+$dataTraspaso = json_decode($functions->getNumeroTraspaso($connnect, $cliente, $proceso));
 $tarjasXVaciar =  json_decode($functions->getTarjasXVaciar($connnect, $lote, $cliente));
 $detalleProceso = json_decode($functions->getProcesoDetalle($connnect, $cliente, $proceso));
 $estadoProceso = json_decode($functions->getEstadoProcesoMovimento($connnect, $cliente, $proceso));
@@ -75,7 +76,11 @@ opvd_fereva) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
             $bultosLote = 0;
             $pesoBin = count($pesosEnvases) > 1 ? array_pop($pesosEnvases) : 0;
             foreach ($tarjasXVaciar as $tarja) {
-                $pesoNeto = $tarja->pesoNeto - $pesoBin;
+                if ($dataTraspaso->codEspecie != 21) {
+                    $pesoNeto = $tarja->pesoNeto;
+                } else {
+                    $pesoNeto = $tarja->pesoNeto - $pesoBin;
+                }
                 $pesoProm = $pesoNeto / $tarja->canBul;
                 $pesoLote += $pesoNeto;
                 $bultosLote += $tarja->canBul;
@@ -118,7 +123,11 @@ opvd_fereva) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
             $bultosLote = 0;
             $pesoBin = count($pesosEnvases) > 1 ? array_pop($pesosEnvases) : 0;
             foreach ($tarjasXVaciar as $tarja) {
-                $pesoNeto = $tarja->pesoNeto - $pesoBin;
+                if ($dataTraspaso->codEspecie != 21) {
+                    $pesoNeto = $tarja->pesoNeto;
+                } else {
+                    $pesoNeto = $tarja->pesoNeto - $pesoBin;
+                }
                 $pesoProm = $pesoNeto / $tarja->canBul;
                 $pesoLote += $pesoNeto;
                 $bultosLote += $tarja->canBul;
