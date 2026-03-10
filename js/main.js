@@ -172,24 +172,24 @@ function vaciarLote(loteId, cliente, proceso) {
             if (response.error == 'si') {
                 if (response.error_type == 1) {
                     alert(response.message);
-                    $('#' + loteId + '_deta').html('<i class="fa-solid fa-caret-up fa-flip-vertical"></i> Vaciar');
+                    $('#' + loteId + '_deta').html('<i class="bi bi-plus-square"></i> Vaciar');
                     $('#' + loteId + '_deta').prop('disabled', false);
-                    $('#' + loteId).html('<i class="fa-solid fa-caret-up fa-flip-vertical"></i> Vaciar');
+                    $('#' + loteId).html('<i class="bi bi-plus-square"></i> Vaciar');
                     $('#' + loteId).prop('disabled', false);
                 }
                 else if (response.error_type == 4) {
                     alert(response.message);
-                    $('#' + loteId).html('<i class="fa-solid fa-caret-up fa-flip-vertical"></i> Vaciar');
+                    $('#' + loteId).html('<i class="bi bi-plus-square"></i> Vaciar');
                     $('#' + loteId).prop('disabled', false);
                 }
                 else if (response.error_type == 5) {
                     alert(response.message);
-                    $('#' + loteId).html('<i class="fa-solid fa-caret-up fa-flip-vertical"></i> Vaciar');
+                    $('#' + loteId).html('<i class="bi bi-plus-square"></i> Vaciar');
                     $('#' + loteId).prop('disabled', false);
                 }
                 else if (response.error_type == 6) {
                     alert(response.message);
-                    $('#' + loteId).html('<i class="fa-solid fa-caret-up fa-flip-vertical"></i> Vaciar');
+                    $('#' + loteId).html('<i class="bi bi-plus-square"></i> Vaciar');
                     $('#' + loteId).prop('disabled', false);
                 }
             } else {
@@ -198,9 +198,9 @@ function vaciarLote(loteId, cliente, proceso) {
                 $('#totBulVac').html(+$('#totBulVac').html() + response.bultosLote);
                 $('#totKilVacReal').html(+$('#totKilVacReal').html() + +response.pesoLote)
                 $('#totKilVac').html(new Intl.NumberFormat("es-ES").format(+$('#totKilVacReal').html()));
-                $('#' + loteId + '_deta').html('<i class="fa-solid fa-check"></i> Vaciado');
+                $('#' + loteId + '_deta').html('<i class="bi bi-check2-square"></i> Vaciado');
                 $('#' + loteId + '_deta').prop('disabled', true);
-                $('#' + loteId).html('<i class="fa-solid fa-check"></i> Vaciado');
+                $('#' + loteId).html('<i class="bi bi-check2-square"></i> Vaciado');
                 $('#' + loteId).prop('disabled', true);
 
             }
@@ -209,7 +209,7 @@ function vaciarLote(loteId, cliente, proceso) {
             console.error("Error en la solicitud:", status, error);
             console.error("Detalles de la respuesta:", xhr.responseText);
             alert('Error al procesar la solicitud' + xhr.responseText);
-            $('#' + loteId).html('<i class="fa-solid fa-caret-up fa-flip-vertical"></i> Vaciar');
+            $('#' + loteId).html('<i class="bi bi-plus-square"></i> Vaciar');
             $('#' + loteId).prop('disabled', false);
         }
     });
@@ -231,9 +231,9 @@ function desplegarLote(loteId, cliente, proceso) {
         success: function (response) {
             if (response.error == 'si') {
                 alert(response.message);
-                $('#' + loteId + '_deta').html('<i class="fa-solid fa-check"></i> Vaciado');
+                $('#' + loteId + '_deta').html('<i class="bi bi-check2-square"></i> Vaciado');
                 $('#' + loteId + '_deta').prop('disabled', true);
-                $('#' + loteId).html('<i class="fa-solid fa-check"></i> Vaciado');
+                $('#' + loteId).html('<i class="bi bi-check2-square"></i> Vaciado');
                 $('#' + loteId).prop('disabled', true);
             } else {
 
@@ -243,19 +243,19 @@ function desplegarLote(loteId, cliente, proceso) {
                             '</td><td>' + valueOfElement.nroTarja +
                             '</td><td>' + valueOfElement.pesoNeto +
                             '</td><td colspan="2">' + valueOfElement.canBul +
-                            '</td><td colspan="2"><button id="' + valueOfElement.nroTarja + '" class="btn btn-success" onclick="vaciarTarja(' + loteId + ', ' + valueOfElement.nroTarja + ', ' + cliente + ', ' + proceso + ')" disabled><i class="fa-solid fa-check"></i> Vaciada</button>' +
+                            '</td><td colspan="2"><button id="' + valueOfElement.nroTarja + '" class="btn btn-success" onclick="vaciarTarja(' + loteId + ', ' + valueOfElement.nroTarja + ', ' + cliente + ', ' + proceso + ')" disabled><i class="bi bi-check2-square"></i> Vaciada</button>' +
                             '</td></tr>');
                     } else {
                         $('#' + loteId + '_row').after('<tr class="border border-warning-subtle tarjas-' + loteId + '">' +
                             '</td><td>' + valueOfElement.nroTarja +
                             '</td><td>' + valueOfElement.pesoNeto +
                             '</td><td colspan="2">' + valueOfElement.canBul +
-                            '</td><td colspan="2"><button id="' + valueOfElement.nroTarja + '" class="btn btn-success" onclick="vaciarTarja(' + loteId + ', ' + valueOfElement.nroTarja + ', ' + cliente + ', ' + proceso + ')"><i class="fa-solid fa-caret-up fa-flip-vertical"></i> Vaciar</button>' +
+                            '</td><td colspan="2"><button id="' + valueOfElement.nroTarja + '" class="btn btn-success" onclick="vaciarTarja(' + loteId + ', ' + valueOfElement.nroTarja + ', ' + cliente + ', ' + proceso + ')"><i class="bi bi-plus-square"></i> Vaciar</button>' +
                             '</td></tr>');
                     }
                 });
                 $('#' + loteId + '_row').after('<tr class="tarjas-' + loteId + ' table-active"><th>Tarja</th><th>Kilos</th><th colspan="2">Bultos</th><th colspan="2">Acción</th></tr>');
-                $('#' + loteId + '_deta').html('<i class="fa-solid fa-caret-up"></i> Cerrar');
+                $('#' + loteId + '_deta').html('<i class="bi bi-dash-square"></i> Cerrar');
                 $('#' + loteId + '_deta').prop('disabled', false);
                 $('#' + loteId + '_deta').attr('onclick', 'cerrarDetalle(' + loteId + ', ' + cliente + ', ' + proceso + ')');
             }
@@ -272,7 +272,7 @@ function cerrarDetalle(loteId, cliente, proceso) {
         element.remove();
     });
     $('#' + loteId + '_deta').attr('onclick', 'desplegarLote(' + loteId + ', ' + cliente + ', ' + proceso + ')');
-    $('#' + loteId + '_deta').html('<i class="fa-solid fa-caret-up fa-flip-vertical"></i> Tarjas');
+    $('#' + loteId + '_deta').html('<i class="bi bi-plus-square"></i> Tarjas');
 
 }
 function mostrarDetalle(cliente, proceso) {
@@ -304,22 +304,22 @@ function vaciarTarja(loteId, tarjaId, cliente, proceso) {
             if (response.error == 'si') {
                 if (response.error_type == 1) {
                     alert(response.message);
-                    $('#' + tarjaId).html('<i class="fa-solid fa-check"></i> Vaciado');
+                    $('#' + tarjaId).html('<i class="bi bi-check2-square"></i> Vaciado');
                     $('#' + tarjaId).prop('disabled', true);
                 }
                 else if (response.error_type == 4) {
                     alert(response.message);
-                    $('#' + tarjaId).html('<i class="fa-solid fa-caret-up fa-flip-vertical"></i> Vaciar');
+                    $('#' + tarjaId).html('<i class="bi bi-plus-square"></i> Vaciar');
                     $('#' + tarjaId).prop('disabled', false);
                 }
                 else if (response.error_type == 5) {
                     alert(response.message);
-                    $('#' + tarjaId).html('<i class="fa-solid fa-caret-up fa-flip-vertical"></i> Vaciar');
+                    $('#' + tarjaId).html('<i class="bi bi-plus-square"></i> Vaciar');
                     $('#' + tarjaId).prop('disabled', false);
                 }
                 else if (response.error_type == 6) {
                     alert(response.message);
-                    $('#' + tarjaId).html('<i class="fa-solid fa-caret-up fa-flip-vertical"></i> Vaciar');
+                    $('#' + tarjaId).html('<i class="bi bi-plus-square"></i> Vaciar');
                     $('#' + tarjaId).prop('disabled', false);
                 }
             } else {
@@ -328,7 +328,7 @@ function vaciarTarja(loteId, tarjaId, cliente, proceso) {
                 $('#totBulVac').html(+$('#totBulVac').html() + +response.bulVac);
                 $('#totKilVacReal').html(+$('#totKilVacReal').html() + +response.pesoVac);
                 $('#totKilVac').html(new Intl.NumberFormat("es-ES").format(+$('#totKilVacReal').html()));
-                $('#' + tarjaId).html('<i class="fa-solid fa-check"></i> Vaciado');
+                $('#' + tarjaId).html('<i class="bi bi-check2-square"></i> Vaciado');
                 $('#' + tarjaId).prop('disabled', true);
 
             }
@@ -337,7 +337,7 @@ function vaciarTarja(loteId, tarjaId, cliente, proceso) {
             console.error("Error en la solicitud:", status, error);
             console.error("Detalles de la respuesta:", xhr.responseText);
             alert('Error al procesar la solicitud' + xhr.responseText);
-            $('#' + tarjaId).html('<i class="fa-solid fa-caret-up fa-flip-vertical"></i> Vaciar');
+            $('#' + tarjaId).html('<i class="bi bi-plus-square"></i> Vaciar');
             $('#' + tarjaId).prop('disabled', false);
         }
     });
