@@ -7,7 +7,7 @@ class Connections
   private $dbServ2024 = "ProdServFtgo_2024";
   private $dbRK2024 = "ProdFrutango_2024";
   private $username = "fcarrasco";
-  private $pass = "jygtsygp";
+  private $pass = "Fc4rrasc@";
 
   public function __construct() {}
 
