@@ -24,6 +24,7 @@ if ($numeroTraspaso == 0) {
 
     $lotesDetalle = json_decode($functions->getLotesXVaciarDeta($connnect, $dataTraspaso->codEspecie, $numeroTraspaso), true);
     $lotesVaciados = json_decode($functions->getLotesVaciados($connnect, $cliente, $proceso), true);
+    $productor =  json_decode($functions->getProductorProceso($connnect, $cliente, $proceso));
     $conteoBulVac = 0;
     $conteoKilVac = 0;
     foreach ($lotesDetalle as $lote => $deta) {
@@ -40,17 +41,27 @@ if ($numeroTraspaso == 0) {
     }
 
 ?>
-    <div class="card mt-1 mb-1">
-        <div class="card-header">
-            <div class="d-flex align-items-center justify-content-center">
-                <div class="flex-fill">Kilos Vaciados</div>
-                <div class="flex-fill" id="totKilVac"><?= number_format($conteoKilVac, 2, ',', '.') ?></div>
-                <div style="display:none" id="totKilVacReal"><?= $conteoKilVac ?></div>
-                <div class="flex-fill">Bultos Vaciados</div>
-                <div class="flex-fill" id="totBulVac"><?= number_format($conteoBulVac, 0, ',', '.') ?></div>
-                <div class="flex-fill"><button class="btn btn-primary col-12" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="mostrarDetalle('<?= $cliente ?>', '<?= $proceso ?>')"><span><i class="bi bi-clipboard-plus"></i></span> <span role="status">Mostrar detalle</span></button></div>
-            </div>
+    <div class="input-group">
+        <div class="form-floating">
+            <input class="form-control fw-bold" type="text" value="<?= $productor->productor ?>" id="productor" disabled readonly>
+            <label for="productor">Productor</label>
         </div>
+    </div>
+    <div class="input-group">
+        <div class="form-floating">
+            <input class="form-control fw-bold" type="number" value="<?= $conteoKilVac ?>" id="totKilVac" disabled readonly step="0.01">
+            <label for="totKilVac">Kilos Vaciados</label>
+        </div>
+        <div class="form-floating">
+            <input class="form-control fw-bold" type="number" value="<?= $conteoBulVac ?>" id="totBulVac" disabled readonly>
+            <label for="totBulVac">Bultos Vaciados</label>
+        </div>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="mostrarDetalle('<?= $cliente ?>', '<?= $proceso ?>')">
+            <span>
+                <i class="bi bi-clipboard-plus"></i>
+            </span>
+            <span role="status">Mostrar detalle</span>
+        </button>
     </div>
 <?php
 }

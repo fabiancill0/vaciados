@@ -25,60 +25,61 @@ $functions = new Functions();
         crossorigin="anonymous" />
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@200..800&family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
     <script src="js/main.js?<?= md5(time()) ?>"></script>
     <style>
         .table-container {
             overflow-y: auto;
             width: 100%;
-            max-height: 50vh;
+            max-height: 50dvh;
             border-radius: 0.25rem;
-        }
-
-        .table-container thead tr {
-            position: sticky;
-            top: 0;
-            z-index: 1;
-            line-height: 20px;
         }
     </style>
 </head>
 
-<body>
+<body style="font-family: Quicksand, sans-serif;">
     <div class="container-fluid mt-3">
         <div class="card">
             <div class="card-header">
                 <a style="position:absolute; z-index: 100" href="http://190.196.68.187/app_hub"><button class="btn btn-primary btn-lg" type="button" id="button-addon1"><i class="bi bi-house"></i></button></a>
                 <h3 class="text-center mb-3">Vaciado orden de proceso</h3>
             </div>
-            <div class="card-body">
-                <div class="row justify-content-center">
-                    <div class="col-12 col-xl-5 mb-3">
-                        <label for="cliente" class="form-label">Cliente</label>
-                        <select name="cliente" id="cliente" class="form-select">
+            <div class="row g-0">
+                <div class="col-xl-6 col-md-5 col-12">
+                    <div class="form-floating">
+                        <select name="cliente" id="cliente" class="form-select form-select-sm">
                             <?php
                             $functions->getClientesCodOrden($conn->connectToServ());
                             ?>
                         </select>
+                        <label for="cliente">Cliente</label>
                     </div>
-                    <div class="col-12 col-xl-3">
-                        <label for="cliente" class="form-label">Procesos del día (seleccione o digite)</label>
-                        <div class="input-group mb-3 dropdown-center">
-                            <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="ordenes" data-bs-toggle="dropdown" aria-expanded="false">N°</button>
-                            <ul class="dropdown-menu" id="list_procesos">
-                            </ul>
-                            <input type="number" name="proceso" id="proceso" class="form-control">
+                </div>
+                <div class="col-xl-4 col-md-5 col-8">
+                    <div class="input-group">
+                        <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" id="ordenes" data-bs-toggle="dropdown" aria-expanded="false">N°</button>
+                        <ul class="dropdown-menu" id="list_procesos">
+                        </ul>
+                        <div class="form-floating">
+                            <input type="number" name="proceso" id="proceso" class="form-control form-control-sm">
+                            <label id="proceso_label" for="proceso">N° Orden</label>
                         </div>
                     </div>
-                    <div class="col-12 col-xl-4 d-flex align-items-middle justify-content-center">
-                        <button type="submit" name="search" id="search" class="btn btn-primary col-12">Cargar</button>
-                    </div>
+                </div>
+                <div class="col-xl-2 col-md-2 col-4">
+                    <button type="submit" name="search" id="search" class="btn col-12 h-100 btn-primary btn-sm">
+                        <span>
+                            <i class="bi bi-arrow-clockwise"></i>
+                        </span>
+                        <span role="status">Cargar</span>
+                    </button>
                 </div>
             </div>
         </div>
-        <div id="prod"></div>
-        <div id="orden" class="table-container"></div>
         <div id="total_proc"></div>
-        <div style="height: 70px"></div>
+        <div id="orden" class="table-container"></div>
         <div class="modal modal-xl fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content" id="deta_proc">

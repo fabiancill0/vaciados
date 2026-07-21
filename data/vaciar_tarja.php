@@ -149,6 +149,6 @@ opvd_fereva) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
                 exit;
             }
         }
-        echo json_encode(['error' => 'no', 'message' => 'Tarja vaciada correctamente.', 'pesoVac' => $pesoNeto, 'bulVac' => $bultosTarja]);
+        echo json_encode(['error' => 'no', 'message' => 'Tarja vaciada correctamente.', 'pesoVac' => $pesoNeto, 'bulVac' => intval($bultosTarja)]);
     }
 }
